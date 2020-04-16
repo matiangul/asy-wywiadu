@@ -15,7 +15,6 @@ const Join = () => {
     role: "guesser",
   });
   useEffect(() => {
-    console.log("load player");
     setPlayer((player) => {
       const storedPlayer = sessionStorage.getItem(`player-${gameName}`);
       return storedPlayer ? JSON.parse(storedPlayer) : player;
@@ -24,7 +23,6 @@ const Join = () => {
   // game state
   const [game, setGame] = useState(null);
   useEffect(() => {
-    console.log("load game");
     setGame(JSON.parse(sessionStorage.getItem(`${gameName}`)));
   }, [gameName]);
 
@@ -65,6 +63,15 @@ const Join = () => {
                       alert("Player with that name already joined the game");
                       return player;
                     }
+                    if (
+                      player.role === "leader" &&
+                      players.find(
+                        (p) => p.role === "leader" && p.color === player.color
+                      )
+                    ) {
+                      alert("There is already leader for that team");
+                      return player;
+                    }
                     sessionStorage.setItem(
                       `player-${gameName}`,
                       JSON.stringify({
@@ -86,6 +93,15 @@ const Join = () => {
                     const players = "players" in game ? game.players : [];
                     if (players.find((p) => p.nick === player.nick)) {
                       alert("Player with that name already joined the game");
+                      return player;
+                    }
+                    if (
+                      player.role === "leader" &&
+                      players.find(
+                        (p) => p.role === "leader" && p.color === color
+                      )
+                    ) {
+                      alert("There is already leader for that team");
                       return player;
                     }
                     sessionStorage.setItem(
@@ -112,6 +128,15 @@ const Join = () => {
                     const players = "players" in game ? game.players : [];
                     if (players.find((p) => p.nick === player.nick)) {
                       alert("Player with that name already joined the game");
+                      return player;
+                    }
+                    if (
+                      role === "leader" &&
+                      players.find(
+                        (p) => p.role === "leader" && p.color === player.color
+                      )
+                    ) {
+                      alert("There is already leader for that team");
                       return player;
                     }
                     sessionStorage.setItem(
@@ -146,6 +171,16 @@ const Join = () => {
                           alert(
                             "Player with that name already joined the game"
                           );
+                          return game;
+                        }
+                        if (
+                          player.role === "leader" &&
+                          players.find(
+                            (p) =>
+                              p.role === "leader" && p.color === player.color
+                          )
+                        ) {
+                          alert("There is already leader for that team");
                           return game;
                         }
                         sessionStorage.setItem(
