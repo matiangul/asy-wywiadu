@@ -15,10 +15,10 @@ const Join = () => {
     role: "guesser",
   });
   useEffect(() => {
-    setPlayer((player) => {
-      const storedPlayer = sessionStorage.getItem(`player-${gameName}`);
-      return storedPlayer ? JSON.parse(storedPlayer) : player;
-    });
+    const storedPlayer = sessionStorage.getItem(`player-${gameName}`);
+    if (storedPlayer) {
+      router.push(`/game/${gameName}`);
+    }
   }, [gameName]);
   // game state
   const [game, setGame] = useState(null);
