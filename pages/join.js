@@ -5,9 +5,9 @@ import { component, global } from "../src/navigation/styles";
 
 const Join = () => {
   const router = useRouter();
-  const { name } = router.query;
   // game name
-  const [gameName, chooseGameName] = useState(name);
+  const [gameName, choseGameName] = useState("");
+  useEffect(() => choseGameName(router.query.name || ""), [router.query.name]);
   // game player
   const [player, setPlayer] = useState({
     nick: "",
@@ -43,11 +43,11 @@ const Join = () => {
             type="text"
             name="gameName"
             placeholder="Nazwa rozgrywki"
+            value={gameName}
             onChange={(e) => {
               const name = e.target.value;
-              chooseGameName(name);
+              choseGameName(name);
             }}
-            value={gameName}
           />
           {game ? (
             <>
@@ -60,6 +60,11 @@ const Join = () => {
                 onChange={(e) => {
                   const nick = e.target.value;
                   setPlayer((player) => {
+                    const players = "players" in game ? game.players : [];
+                    if (players.find((p) => p.nick === nick)) {
+                      alert("Player with that name already joined the game");
+                      return player;
+                    }
                     sessionStorage.setItem(
                       `player-${gameName}`,
                       JSON.stringify({
@@ -78,6 +83,11 @@ const Join = () => {
                 onChange={(e) => {
                   const color = e.target.value;
                   setPlayer((player) => {
+                    const players = "players" in game ? game.players : [];
+                    if (players.find((p) => p.nick === player.nick)) {
+                      alert("Player with that name already joined the game");
+                      return player;
+                    }
                     sessionStorage.setItem(
                       `player-${gameName}`,
                       JSON.stringify({
@@ -99,6 +109,11 @@ const Join = () => {
                 onChange={(e) => {
                   const role = e.target.value;
                   setPlayer((player) => {
+                    const players = "players" in game ? game.players : [];
+                    if (players.find((p) => p.nick === player.nick)) {
+                      alert("Player with that name already joined the game");
+                      return player;
+                    }
                     sessionStorage.setItem(
                       `player-${gameName}`,
                       JSON.stringify({
@@ -127,6 +142,12 @@ const Join = () => {
                     onClick={() =>
                       setGame((game) => {
                         const players = "players" in game ? game.players : [];
+                        if (players.find((p) => p.nick === player.nick)) {
+                          alert(
+                            "Player with that name already joined the game"
+                          );
+                          return game;
+                        }
                         sessionStorage.setItem(
                           `${gameName}`,
                           JSON.stringify({
