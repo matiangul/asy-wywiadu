@@ -1,10 +1,40 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { component, global } from "../src/navigation/styles";
+import Game from "../src/game";
 import { useState } from "react";
 
 const Create = () => {
-  const [words, setWords] = useState([]);
+  const router = useRouter();
+  const [words, setWords] = useState([
+    "There",
+    "is",
+    "no",
+    "one",
+    "byk",
+    "loves",
+    "joy",
+    "itself",
+    "who",
+    "seeks",
+    "after",
+    "up",
+    "and",
+    "wants",
+    "to",
+    "have",
+    "on",
+    "simply",
+    "because",
+    "it",
+    "are",
+    "pain",
+    "hehe",
+    "rata",
+    "end",
+  ]);
   const [word, setWord] = useState("");
+  const [startingColor, changeStartingColor] = useState("red");
 
   return (
     <div className="container">
@@ -44,6 +74,24 @@ const Create = () => {
             <li key={w}>{w}</li>
           ))}
         </ul>
+
+        <h5>Kto zaczyna?</h5>
+        <select
+          value={startingColor}
+          onChange={(e) => changeStartingColor(e.target.value)}
+        >
+          <option value="red">Czerwoni</option>
+          <option value="blue">Niebiescy</option>
+        </select>
+
+        <button
+          onClick={() => {
+            const game = new Game(words, startingColor).save();
+            router.push(`/join?name=${game.name}`);
+          }}
+        >
+          Rozpocznij grę
+        </button>
       </main>
 
       <footer>
