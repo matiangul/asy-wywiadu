@@ -28,32 +28,33 @@ const Game = () => {
     <>
       <Board role={player.role} board={game.board} />
 
-      {player.role === "leader" && (
-        <>
-          <p>Wpisz hasło dla swojej drużyny</p>
-          <input
-            type="text"
-            name="password"
-            placeholder="Kostka 2"
-            value={game.roundsPassword[game.round]}
-            onChange={(e) => {
-              const password = e.target.value;
-              const changedRoundsPassword = [...game.roundsPassword];
-              changedRoundsPassword[game.round] = password;
-              setGame((game) => {
-                sessionStorage.setItem(
-                  name,
-                  JSON.stringify({
-                    ...game,
-                    roundsPassword: changedRoundsPassword,
-                  })
-                );
-                return { ...game, roundsPassword: changedRoundsPassword };
-              });
-            }}
-          />
-        </>
-      )}
+      {player.role === "leader" &&
+        player.color === game.roundsColor[game.round] && (
+          <>
+            <p>Wpisz hasło dla swojej drużyny:</p>
+            <input
+              type="text"
+              name="password"
+              placeholder="Kostka 2"
+              value={game.roundsPassword[game.round]}
+              onChange={(e) => {
+                const password = e.target.value;
+                const changedRoundsPassword = [...game.roundsPassword];
+                changedRoundsPassword[game.round] = password;
+                setGame((game) => {
+                  sessionStorage.setItem(
+                    name,
+                    JSON.stringify({
+                      ...game,
+                      roundsPassword: changedRoundsPassword,
+                    })
+                  );
+                  return { ...game, roundsPassword: changedRoundsPassword };
+                });
+              }}
+            />
+          </>
+        )}
 
       <p className="text">
         Kolej na drużynę{" "}
