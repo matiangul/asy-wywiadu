@@ -1,8 +1,8 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { component, global } from "../src/navigation/styles";
 import Game from "../src/game";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 const Create = () => {
   const router = useRouter();
@@ -35,6 +35,7 @@ const Create = () => {
   ]);
   const [word, setWord] = useState("");
   const [startingColor, changeStartingColor] = useState("red");
+  const [game, setGame] = useState(null);
 
   return (
     <div className="container">
@@ -53,6 +54,7 @@ const Create = () => {
           placeholder="Hasło"
           value={word}
           onChange={(e) => setWord(e.target.value)}
+          disabled={!!game}
         />
         <button
           onClick={() => {
@@ -65,6 +67,7 @@ const Create = () => {
             }
             setWords((list) => list.concat(word.trim()));
           }}
+          disabled={!!game}
         >
           Dodaj
         </button>
@@ -79,19 +82,48 @@ const Create = () => {
         <select
           value={startingColor}
           onChange={(e) => changeStartingColor(e.target.value)}
+          disabled={!!game}
         >
           <option value="red">Czerwoni</option>
           <option value="blue">Niebiescy</option>
         </select>
 
-        <button
-          onClick={() => {
-            const game = new Game(words, startingColor).save();
-            router.push(`/join?name=${game.name}`);
-          }}
-        >
-          Rozpocznij grę
-        </button>
+        {!game && (
+          <button
+            onClick={() => {
+              setGame(new Game(words, startingColor).save().name);
+            }}
+          >
+            Stwórz grę
+          </button>
+        )}
+
+        {game && (
+          <>
+            <p>
+              Gra{" "}
+              <a
+                target="_blank"
+                href={`${window.location.protocol}//${window.location.host}/join?name=${game}`}
+              >
+                {`${window.location.protocol}//${window.location.host}/join?name=${game}`}
+              </a>{" "}
+              czeka na rozpoczęcie
+            </p>
+            <button
+              onClick={() => {
+                const createdGame = JSON.parse(sessionStorage.getItem(game));
+                sessionStorage.setItem(
+                  game,
+                  JSON.stringify({ ...createdGame, started: Date.now() })
+                );
+                router.push(`/join?name=${game}`);
+              }}
+            >
+              Rozpocznij grę
+            </button>
+          </>
+        )}
       </main>
 
       <footer>

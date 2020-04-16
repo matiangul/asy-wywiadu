@@ -17,6 +17,7 @@ class Game {
     this.roundsPassword = [""];
     this.players = [];
     this.name = uuid();
+    this.started = null;
   }
 
   static colorWords(words, startingColor) {

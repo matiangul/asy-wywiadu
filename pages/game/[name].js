@@ -26,7 +26,7 @@ const Game = () => {
 
   return (
     <>
-      <Board role={player.role} board={game.board} />
+      <Board role={player.role} board={game.board} round={game.round} />
 
       {player.role === "leader" &&
         player.color === game.roundsColor[game.round] && (
@@ -57,12 +57,14 @@ const Game = () => {
         )}
 
       <p className="text">
-        Kolej na drużynę{" "}
-        {game.roundsColor[game.round] === "red" ? "czerwonych" : "niebieskich"}
+        Kolej na
+        {game.roundsColor[game.round] === player.color ? " twoją " : " drugą "}
+        drużynę
       </p>
-      <p className="text">{`Wasze hasło to: "${
-        game.roundsPassword[game.round]
-      }"`}</p>
+      <p className="text">
+        {game.roundsColor[game.round] === player.color ? "Wasze " : "Ich "}
+        hasło to: "{game.roundsPassword[game.round]}"
+      </p>
 
       <style jsx="true" global>{`
         * {
