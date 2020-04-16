@@ -114,6 +114,10 @@ const Game = () => {
           background: #0631b2bd;
         }
 
+        .memory-card.black {
+          background: #000000bd;
+        }
+
         .memory-card:active {
           transform: scale(0.97);
           transition: transform 0.2s;
@@ -122,6 +126,10 @@ const Game = () => {
         .memory-card p {
           text-align: center;
           color: #333333;
+        }
+
+        .memory-card.black p {
+          color: #ffffff;
         }
 
         @media screen and (max-width: 750px) and (max-height: 500px) {
