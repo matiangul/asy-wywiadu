@@ -57,30 +57,7 @@ const Join = () => {
                 value={player.nick}
                 onChange={(e) => {
                   const nick = e.target.value;
-                  setPlayer((player) => {
-                    const players = "players" in game ? game.players : [];
-                    if (players.find((p) => p.nick === nick)) {
-                      alert("Player with that name already joined the game");
-                      return player;
-                    }
-                    if (
-                      player.role === "leader" &&
-                      players.find(
-                        (p) => p.role === "leader" && p.color === player.color
-                      )
-                    ) {
-                      alert("There is already leader for that team");
-                      return player;
-                    }
-                    sessionStorage.setItem(
-                      `player-${gameName}`,
-                      JSON.stringify({
-                        ...player,
-                        nick,
-                      })
-                    );
-                    return { ...player, nick };
-                  });
+                  setPlayer((player) => ({ ...player, nick }));
                 }}
               />
               <p>Wybierz drużynę</p>
@@ -89,30 +66,7 @@ const Join = () => {
                 value={player.color}
                 onChange={(e) => {
                   const color = e.target.value;
-                  setPlayer((player) => {
-                    const players = "players" in game ? game.players : [];
-                    if (players.find((p) => p.nick === player.nick)) {
-                      alert("Player with that name already joined the game");
-                      return player;
-                    }
-                    if (
-                      player.role === "leader" &&
-                      players.find(
-                        (p) => p.role === "leader" && p.color === color
-                      )
-                    ) {
-                      alert("There is already leader for that team");
-                      return player;
-                    }
-                    sessionStorage.setItem(
-                      `player-${gameName}`,
-                      JSON.stringify({
-                        ...player,
-                        color,
-                      })
-                    );
-                    return { ...player, color };
-                  });
+                  setPlayer((player) => ({ ...player, color }));
                 }}
               >
                 <option value="red">Czerwoni</option>
@@ -124,30 +78,7 @@ const Join = () => {
                 value={player.role}
                 onChange={(e) => {
                   const role = e.target.value;
-                  setPlayer((player) => {
-                    const players = "players" in game ? game.players : [];
-                    if (players.find((p) => p.nick === player.nick)) {
-                      alert("Player with that name already joined the game");
-                      return player;
-                    }
-                    if (
-                      role === "leader" &&
-                      players.find(
-                        (p) => p.role === "leader" && p.color === player.color
-                      )
-                    ) {
-                      alert("There is already leader for that team");
-                      return player;
-                    }
-                    sessionStorage.setItem(
-                      `player-${gameName}`,
-                      JSON.stringify({
-                        ...player,
-                        role,
-                      })
-                    );
-                    return { ...player, role };
-                  });
+                  setPlayer((player) => ({ ...player, role }));
                 }}
               >
                 <option value="leader">Lider</option>
