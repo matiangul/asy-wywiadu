@@ -5,8 +5,11 @@ const Board = ({ player, game }) => {
     (teammate) => teammate.color === player.color && teammate.role === "guesser"
   );
 
+  const isWordVisible = game.started;
+
   function toggleCard(cardIndex) {
     if (
+      game.started &&
       game.roundsColor[game.round] === player.color &&
       player.role === "guesser" &&
       !game.selected[cardIndex]
@@ -39,15 +42,15 @@ const Board = ({ player, game }) => {
 
   function isColorVisible(cardIndex) {
     return (
-      player.role === "leader" ||
-      (player.role === "guesser" &&
-        game.started &&
-        game.selected[cardIndex] === true)
+      game.started &&
+      (player.role === "leader" ||
+        (player.role === "guesser" && game.selected[cardIndex] === true))
     );
   }
 
   function areVotesVisible(cardIndex) {
     return (
+      game.started &&
       player.role === "guesser" &&
       (game.board[cardIndex].votesPerRound[game.round] || []).length > 0
     );
@@ -63,7 +66,7 @@ const Board = ({ player, game }) => {
           }`}
           key={card.word}
         >
-          <p>{card.word}</p>
+          <p>{isWordVisible && card.word}</p>
           {areVotesVisible(cardIndex) && (
             <p>{(card.votesPerRound[game.round] || []).length}</p>
           )}
