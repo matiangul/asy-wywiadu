@@ -23,7 +23,7 @@ const Join = () => {
   // game state
   const [game, setGame] = useState(null);
   useEffect(() => {
-    setGame(JSON.parse(sessionStorage.getItem(`${gameName}`)));
+    setGame(JSON.parse(localStorage.getItem(gameName)));
   }, [gameName]);
 
   return (
@@ -114,8 +114,8 @@ const Join = () => {
                           alert("There is already leader for that team");
                           return game;
                         }
-                        sessionStorage.setItem(
-                          `${gameName}`,
+                        localStorage.setItem(
+                          gameName,
                           JSON.stringify({
                             ...game,
                             players: players.concat(player),

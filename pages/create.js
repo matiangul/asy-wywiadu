@@ -35,7 +35,7 @@ const Create = () => {
   ]);
   const [word, setWord] = useState("");
   const [startingColor, changeStartingColor] = useState("red");
-  const [game, setGame] = useState(null);
+  const [gameName, setGameName] = useState(null);
 
   return (
     <div className="container">
@@ -54,7 +54,7 @@ const Create = () => {
           placeholder="Hasło"
           value={word}
           onChange={(e) => setWord(e.target.value)}
-          disabled={!!game}
+          disabled={!!gameName}
         />
         <button
           onClick={() => {
@@ -67,7 +67,7 @@ const Create = () => {
             }
             setWords((list) => list.concat(word.trim()));
           }}
-          disabled={!!game}
+          disabled={!!gameName}
         >
           Dodaj
         </button>
@@ -82,42 +82,42 @@ const Create = () => {
         <select
           value={startingColor}
           onChange={(e) => changeStartingColor(e.target.value)}
-          disabled={!!game}
+          disabled={!!gameName}
         >
           <option value="red">Czerwoni</option>
           <option value="blue">Niebiescy</option>
         </select>
 
-        {!game && (
+        {!gameName && (
           <button
             onClick={() => {
-              setGame(new Game(words, startingColor).save().name);
+              setGameName(new Game(words, startingColor).save().name);
             }}
           >
             Stwórz grę
           </button>
         )}
 
-        {game && (
+        {gameName && (
           <>
             <p>
               Gra{" "}
               <a
                 target="_blank"
-                href={`${window.location.protocol}//${window.location.host}/join?name=${game}`}
+                href={`${window.location.protocol}//${window.location.host}/join?name=${gameName}`}
               >
-                {`${window.location.protocol}//${window.location.host}/join?name=${game}`}
+                {`${window.location.protocol}//${window.location.host}/join?name=${gameName}`}
               </a>{" "}
               czeka na rozpoczęcie
             </p>
             <button
               onClick={() => {
-                const createdGame = JSON.parse(sessionStorage.getItem(game));
-                sessionStorage.setItem(
-                  game,
+                const createdGame = JSON.parse(localStorage.getItem(gameName));
+                localStorage.setItem(
+                  gameName,
                   JSON.stringify({ ...createdGame, started: Date.now() })
                 );
-                router.push(`/join?name=${game}`);
+                router.push(`/join?name=${gameName}`);
               }}
             >
               Rozpocznij grę

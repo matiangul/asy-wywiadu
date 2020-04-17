@@ -9,9 +9,10 @@ class Game {
     const coloredWords = Game.colorWords(words, startingColor);
     this.board = words.map((word) => ({
       word,
-      voteCountPerRound: [0],
+      votesPerRound: [[]],
       color: coloredWords[word],
     }));
+    this.selected = [];
     this.round = 0;
     this.roundsColor = [startingColor];
     this.roundsPassword = [""];
@@ -53,9 +54,13 @@ class Game {
   }
 
   save() {
-    sessionStorage.setItem(this.name, JSON.stringify(this.toJSON()));
+    localStorage.setItem(this.name, JSON.stringify(this.toJSON()));
     return this;
   }
+}
+
+export function arePlayersSame(player1, player2) {
+  return player1.nick === player2.nick;
 }
 
 export default Game;

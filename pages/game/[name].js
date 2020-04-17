@@ -1,15 +1,15 @@
-import Error from "next/error";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Board from "../../src/board";
+import { arePlayersSame } from "../../src/game";
 
 const Game = () => {
   const router = useRouter();
   const { name } = router.query;
-
+  // load game
   const [game, setGame] = useState(null);
-  useEffect(() => setGame(JSON.parse(sessionStorage.getItem(name))), [name]);
-
+  useEffect(() => setGame(JSON.parse(localStorage.getItem(name))), [name]);
+  // load player
   const [player, setPlayer] = useState(null);
   useEffect(
     () => setPlayer(JSON.parse(sessionStorage.getItem(`player-${name}`))),
@@ -17,16 +17,16 @@ const Game = () => {
   );
 
   if (!game) {
-    return <Error statusCode={404} />;
+    return <p>Nic nie wiem o tej grze :(</p>;
   }
 
-  if (!player) {
-    return <p>Who are you?</p>;
+  if (!player || !game.players.find((p) => arePlayersSame(p, player))) {
+    return <p>Ktoś ty?</p>;
   }
 
   return (
     <>
-      <Board role={player.role} board={game.board} round={game.round} />
+      <Board player={player} game={game} />
 
       {player.role === "leader" &&
         player.color === game.roundsColor[game.round] && (
@@ -42,7 +42,7 @@ const Game = () => {
                 const changedRoundsPassword = [...game.roundsPassword];
                 changedRoundsPassword[game.round] = password;
                 setGame((game) => {
-                  sessionStorage.setItem(
+                  localStorage.setItem(
                     name,
                     JSON.stringify({
                       ...game,
