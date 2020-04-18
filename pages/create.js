@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { component, global } from "../src/navigation/styles";
-import Game from "../src/game";
+import { createGame, saveGame } from "../src/game";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
@@ -91,7 +91,9 @@ const Create = () => {
         {!gameName && (
           <button
             onClick={() => {
-              setGameName(new Game(words, startingColor).save().name);
+              const game = createGame(words, startingColor);
+              saveGame(game);
+              setGameName(game.name);
             }}
           >
             Stwórz grę

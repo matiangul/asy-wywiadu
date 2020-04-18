@@ -1,4 +1,9 @@
-import Game, { arePlayersSame, saveGame, nextRound } from "../src/game";
+import {
+  oppositeColor,
+  arePlayersSame,
+  saveGame,
+  nextRound,
+} from "../src/game";
 
 const Board = ({ player, game }) => {
   const guessers = game.players.filter(
@@ -35,7 +40,7 @@ const Board = ({ player, game }) => {
         game.selected[cardIndex] = true;
         if (
           game.board[cardIndex].color === "yellow" ||
-          game.board[cardIndex].color === Game.secondaryColor(player.color)
+          game.board[cardIndex].color === oppositeColor(player.color)
         ) {
           nextRound(game);
         }

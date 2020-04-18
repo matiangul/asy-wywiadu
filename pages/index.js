@@ -1,53 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import { component, global } from "../src/navigation/styles";
-import firebase from "../src/firebase";
 
 const Home = () => {
-  var gameRef = firebase.database().ref("/game/1");
-  gameRef.on("value", function (gameSnapshot) {
-    console.log("listener", gameSnapshot.val());
-  });
-
-  // remember to off listeners
-
-  firebase
-    .database()
-    .ref("/game/1")
-    .set(
-      {
-        name: "Mateusz",
-      },
-      function (error) {
-        if (error) {
-          console.log("Game set error");
-        } else {
-          console.log("Game set");
-        }
-      }
-    );
-
-  setTimeout(
-    () =>
-      firebase
-        .database()
-        .ref("/game/1")
-        .transaction(function (game) {
-          game.name = "1";
-          console.log("transaction", game);
-          return game;
-        }),
-    5000
-  );
-
-  firebase
-    .database()
-    .ref("/game/1")
-    .once("value")
-    .then(function (gameSnapshot) {
-      console.log("read", gameSnapshot.val() || "nie ma");
-    });
-
   return (
     <div className="container">
       <Head>

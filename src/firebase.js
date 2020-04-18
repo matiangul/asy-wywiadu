@@ -23,4 +23,48 @@ if (firebase.apps.length > 0) {
   });
 }
 
+// var gameRef = firebase.database().ref("/game/1");
+// gameRef.on("value", function (gameSnapshot) {
+//   console.log("listener", gameSnapshot.val());
+// });
+
+// // remember to off listeners
+
+// firebase
+//   .database()
+//   .ref("/game/1")
+//   .set(
+//     {
+//       name: "Mateusz",
+//     },
+//     function (error) {
+//       if (error) {
+//         console.log("Game set error");
+//       } else {
+//         console.log("Game set");
+//       }
+//     }
+//   );
+
+// setTimeout(
+//   () =>
+//     firebase
+//       .database()
+//       .ref("/game/1")
+//       .transaction(function (game) {
+//         game.name = "1";
+//         console.log("transaction", game);
+//         return game;
+//       }),
+//   5000
+// );
+
+// firebase
+//   .database()
+//   .ref("/game/1")
+//   .once("value")
+//   .then(function (gameSnapshot) {
+//     console.log("read", gameSnapshot.val() || "nie ma");
+//   });
+
 export default app;
