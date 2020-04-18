@@ -1,4 +1,4 @@
-import { arePlayersSame } from "../src/game";
+import Game, { arePlayersSame, saveGame, nextRound } from "../src/game";
 
 const Board = ({ player, game }) => {
   const guessers = game.players.filter(
@@ -14,17 +14,16 @@ const Board = ({ player, game }) => {
       player.role === "guesser" &&
       !game.selected[cardIndex]
     ) {
-      const changedGame = { ...game };
       const exists = (
         game.board[cardIndex].votesPerRound[game.round] || []
       ).find((vote) => arePlayersSame(vote, player));
 
-      changedGame.board[cardIndex].votesPerRound[game.round] = (
+      game.board[cardIndex].votesPerRound[game.round] = (
         game.board[cardIndex].votesPerRound[game.round] || []
       ).filter((vote) => !arePlayersSame(vote, player));
 
       if (!exists) {
-        changedGame.board[cardIndex].votesPerRound[game.round] = (
+        game.board[cardIndex].votesPerRound[game.round] = (
           game.board[cardIndex].votesPerRound[game.round] || []
         ).concat(player);
       }
@@ -33,10 +32,16 @@ const Board = ({ player, game }) => {
         guessers.length ===
         (game.board[cardIndex].votesPerRound[game.round] || []).length
       ) {
-        changedGame.selected[cardIndex] = true;
+        game.selected[cardIndex] = true;
+        if (
+          game.board[cardIndex].color === "yellow" ||
+          game.board[cardIndex].color === Game.secondaryColor(player.color)
+        ) {
+          nextRound(game);
+        }
       }
 
-      localStorage.setItem(game.name, JSON.stringify(changedGame));
+      saveGame(game);
     }
   }
 

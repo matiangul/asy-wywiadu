@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Board from "../../src/board";
-import { arePlayersSame } from "../../src/game";
+import { arePlayersSame, nextRound, saveGame } from "../../src/game";
 
 const Game = () => {
   const router = useRouter();
@@ -54,6 +54,51 @@ const Game = () => {
               }}
             />
           </>
+        )}
+
+      {player.role === "guesser" &&
+        player.color === game.roundsColor[game.round] && (
+          <button
+            type="button"
+            onClick={() => {
+              setGame((game) => {
+                const votes = (
+                  (game.roundsEndRoundVotes || [])[game.round] || []
+                )
+                  .filter((vote) => !arePlayersSame(vote, player))
+                  .concat(player);
+
+                const newRoundsEndRoundVotes = [
+                  ...(game.roundsEndRoundVotes || []),
+                ];
+                newRoundsEndRoundVotes[game.round] = votes;
+
+                const changedGame = {
+                  ...game,
+                  roundsEndRoundVotes: newRoundsEndRoundVotes,
+                };
+
+                const guessers = changedGame.players.filter(
+                  (teammate) =>
+                    teammate.color === player.color &&
+                    teammate.role === "guesser"
+                );
+
+                if (
+                  changedGame.roundsEndRoundVotes[game.round].length ===
+                  guessers.length
+                ) {
+                  nextRound(changedGame);
+                }
+
+                saveGame(changedGame);
+
+                return changedGame;
+              });
+            }}
+          >
+            Poddaje się w tej rundzie
+          </button>
         )}
 
       <p className="text">

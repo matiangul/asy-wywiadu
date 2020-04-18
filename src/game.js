@@ -19,6 +19,7 @@ class Game {
     this.players = [];
     this.name = uuid();
     this.started = null;
+    this.roundsEndRoundVotes = [];
   }
 
   static colorWords(words, startingColor) {
@@ -57,6 +58,19 @@ class Game {
     localStorage.setItem(this.name, JSON.stringify(this.toJSON()));
     return this;
   }
+}
+
+export function nextRound(game) {
+  game.round += 1;
+  game.roundsColor[game.round] = Game.secondaryColor(
+    game.roundsColor[game.round - 1]
+  );
+  game.roundsPassword[game.round] = "";
+  saveGame(game);
+}
+
+export function saveGame(game) {
+  localStorage.setItem(game.name, JSON.stringify(game));
 }
 
 export function arePlayersSame(player1, player2) {
