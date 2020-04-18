@@ -3,29 +3,35 @@ import { useEffect, useState } from "react";
 import Board from "../../src/board";
 import {
   arePlayersSame,
-  nextRound,
-  saveGame,
+  voteForRoundEnd,
   selectedCards,
   oppositeColor,
+  setRoundsPassword,
 } from "../../src/game";
+import { updateGame, loadGame, loadPlayer } from "../../src/store";
 
 const Game = () => {
   const router = useRouter();
   const { name } = router.query;
-  // load game
+  // game state
   const [game, setGame] = useState(null);
-  useEffect(() => setGame(JSON.parse(localStorage.getItem(name))), [name]);
+  useEffect(() => {
+    if (name) {
+      loadGame(name).then(setGame);
+    }
+  }, [name]);
   // load player
   const [player, setPlayer] = useState(null);
-  useEffect(
-    () => setPlayer(JSON.parse(sessionStorage.getItem(`player-${name}`))),
-    [name]
-  );
+  useEffect(() => {
+    if (name) {
+      loadPlayer(name).then(setPlayer);
+    }
+  }, [name]);
 
   const selectedBlackCard = selectedCards(game).find(
     ({ color }) => "black" === color
   );
-  if (selectedBlackCard) {
+  if (game && player && selectedBlackCard) {
     return (
       <>
         {game.roundsColor[game.round] !== player.color && (
@@ -44,12 +50,14 @@ const Game = () => {
     );
   }
 
-  const myColorSelectedCards = selectedCards(game).filter(
-    ({ color }) => player.color === color
-  );
-  const myColorCards = game
-    ? game.board.filter(({ color }) => player.color === color)
-    : [];
+  const myColorSelectedCards =
+    game && player
+      ? selectedCards(game).filter(({ color }) => player.color === color)
+      : [];
+  const myColorCards =
+    game && player
+      ? game.board.filter(({ color }) => player.color === color)
+      : [];
   if (
     myColorSelectedCards.length === myColorCards.length &&
     myColorCards.length > 0
@@ -62,12 +70,16 @@ const Game = () => {
     );
   }
 
-  const oppositeColorSelectedCards = selectedCards(game).filter(
-    ({ color }) => oppositeColor(player.color) === color
-  );
-  const oppositeColorCards = game
-    ? game.board.filter(({ color }) => oppositeColor(player.color) === color)
-    : [];
+  const oppositeColorSelectedCards =
+    game && player
+      ? selectedCards(game).filter(
+          ({ color }) => oppositeColor(player.color) === color
+        )
+      : [];
+  const oppositeColorCards =
+    game && player
+      ? game.board.filter(({ color }) => oppositeColor(player.color) === color)
+      : [];
   if (
     oppositeColorSelectedCards.length === oppositeColorCards.length &&
     oppositeColorCards.length > 0
@@ -103,18 +115,10 @@ const Game = () => {
               value={game.roundsPassword[game.round]}
               onChange={(e) => {
                 const password = e.target.value;
-                const changedRoundsPassword = [...game.roundsPassword];
-                changedRoundsPassword[game.round] = password;
-                setGame((game) => {
-                  localStorage.setItem(
-                    name,
-                    JSON.stringify({
-                      ...game,
-                      roundsPassword: changedRoundsPassword,
-                    })
-                  );
-                  return { ...game, roundsPassword: changedRoundsPassword };
-                });
+                console.log("change rounds password", password);
+                updateGame(game.name, (remoteGame) =>
+                  setRoundsPassword(remoteGame, password)
+                );
               }}
             />
           </>
@@ -125,40 +129,10 @@ const Game = () => {
           <button
             type="button"
             onClick={() => {
-              setGame((game) => {
-                const votes = (
-                  (game.roundsEndRoundVotes || [])[game.round] || []
-                )
-                  .filter((vote) => !arePlayersSame(vote, player))
-                  .concat(player);
-
-                const newRoundsEndRoundVotes = [
-                  ...(game.roundsEndRoundVotes || []),
-                ];
-                newRoundsEndRoundVotes[game.round] = votes;
-
-                const changedGame = {
-                  ...game,
-                  roundsEndRoundVotes: newRoundsEndRoundVotes,
-                };
-
-                const guessers = changedGame.players.filter(
-                  (teammate) =>
-                    teammate.color === player.color &&
-                    teammate.role === "guesser"
-                );
-
-                if (
-                  changedGame.roundsEndRoundVotes[game.round].length ===
-                  guessers.length
-                ) {
-                  nextRound(changedGame);
-                }
-
-                saveGame(changedGame);
-
-                return changedGame;
-              });
+              console.log("give up", player);
+              updateGame(game.name, (remoteGame) =>
+                voteForRoundEnd(remoteGame, player)
+              );
             }}
           >
             Poddaje się w tej rundzie

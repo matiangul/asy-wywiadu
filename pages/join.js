@@ -2,6 +2,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { component, global } from "../src/navigation/styles";
+import { loadGame, loadPlayer, updateGame, updatePlayer } from "../src/store";
+import { addPlayer } from "../src/game";
 
 const Join = () => {
   const router = useRouter();
@@ -15,15 +17,20 @@ const Join = () => {
     role: "guesser",
   });
   useEffect(() => {
-    const storedPlayer = sessionStorage.getItem(`player-${gameName}`);
-    if (storedPlayer) {
-      router.push(`/game/${gameName}`);
+    if (gameName) {
+      loadPlayer(gameName).then((storedPlayer) => {
+        if (storedPlayer) {
+          router.push(`/game/${gameName}`);
+        }
+      });
     }
   }, [gameName]);
   // game state
   const [game, setGame] = useState(null);
   useEffect(() => {
-    setGame(JSON.parse(localStorage.getItem(gameName)));
+    if (gameName) {
+      loadGame(gameName).then(setGame);
+    }
   }, [gameName]);
 
   return (
@@ -36,7 +43,7 @@ const Join = () => {
       <main>
         <h1 className="title">Hej Asie</h1>
         <p className="description">Tutaj możesz dołączyć do istniejącej gry</p>
-        <form action={`/game/${gameName}`}>
+        <form>
           <input
             type="text"
             name="gameName"
@@ -95,42 +102,16 @@ const Join = () => {
                   </p>
                   <button
                     type="submit"
-                    onClick={() =>
-                      setGame((game) => {
-                        const players = "players" in game ? game.players : [];
-                        if (players.find((p) => p.nick === player.nick)) {
-                          alert(
-                            "Player with that name already joined the game"
-                          );
-                          return game;
-                        }
-                        if (
-                          player.role === "leader" &&
-                          players.find(
-                            (p) =>
-                              p.role === "leader" && p.color === player.color
-                          )
-                        ) {
-                          alert("There is already leader for that team");
-                          return game;
-                        }
-                        localStorage.setItem(
-                          gameName,
-                          JSON.stringify({
-                            ...game,
-                            players: players.concat(player),
-                          })
-                        );
-                        sessionStorage.setItem(
-                          `player-${gameName}`,
-                          JSON.stringify(player)
-                        );
-                        return {
-                          ...game,
-                          players: players.concat(player),
-                        };
-                      })
-                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      console.log("join game", game);
+                      updateGame(game.name, (remoteGame) =>
+                        addPlayer(remoteGame, player)
+                      )
+                        .then(() => updatePlayer(player, gameName))
+                        .then(() => router.push(`/game/${gameName}`))
+                        .catch((e) => alert(e));
+                    }}
                   >
                     Dołącz
                   </button>
