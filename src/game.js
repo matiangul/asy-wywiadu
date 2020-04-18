@@ -85,4 +85,8 @@ export function selectedCards(game) {
   return game.board.filter((_, cardIndex) => game.selected[cardIndex]);
 }
 
+export function oppositeColor(color) {
+  return Game.secondaryColor(color);
+}
+
 export default Game;

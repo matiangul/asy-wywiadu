@@ -6,6 +6,7 @@ import {
   nextRound,
   saveGame,
   selectedCards,
+  oppositeColor,
 } from "../../src/game";
 
 const Game = () => {
@@ -39,6 +40,42 @@ const Game = () => {
             : "Przeciwna "}{" "}
           drużyna zaznaczyła czarną kartę.
         </p>
+      </>
+    );
+  }
+
+  const myColorSelectedCards = selectedCards(game).filter(
+    ({ color }) => player.color === color
+  );
+  const myColorCards = game
+    ? game.board.filter(({ color }) => player.color === color)
+    : [];
+  if (
+    myColorSelectedCards.length === myColorCards.length &&
+    myColorCards.length > 0
+  ) {
+    return (
+      <>
+        <p className="text">Jesteś zwycięzcą!</p>
+        <p>Twoja drużyna ma już wszystkie wasze hasła.</p>
+      </>
+    );
+  }
+
+  const oppositeColorSelectedCards = selectedCards(game).filter(
+    ({ color }) => oppositeColor(player.color) === color
+  );
+  const oppositeColorCards = game
+    ? game.board.filter(({ color }) => oppositeColor(player.color) === color)
+    : [];
+  if (
+    oppositeColorSelectedCards.length === oppositeColorCards.length &&
+    oppositeColorCards.length > 0
+  ) {
+    return (
+      <>
+        <p className="text">Pregraliście :(</p>
+        <p>Niestety przeciwna drużyna ma już wszystkie swoje hasła.</p>
       </>
     );
   }
