@@ -1,7 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Board from "../../src/board";
-import { arePlayersSame, nextRound, saveGame } from "../../src/game";
+import {
+  arePlayersSame,
+  nextRound,
+  saveGame,
+  selectedCards,
+} from "../../src/game";
 
 const Game = () => {
   const router = useRouter();
@@ -15,6 +20,28 @@ const Game = () => {
     () => setPlayer(JSON.parse(sessionStorage.getItem(`player-${name}`))),
     [name]
   );
+
+  const selectedBlackCard = selectedCards(game).find(
+    ({ color }) => "black" === color
+  );
+  if (selectedBlackCard) {
+    return (
+      <>
+        {game.roundsColor[game.round] !== player.color && (
+          <p className="text">Jesteś zwycięzcą!</p>
+        )}
+        {game.roundsColor[game.round] === player.color && (
+          <p className="text">Pregraliście :(</p>
+        )}
+        <p>
+          {game.roundsColor[game.round] === player.color
+            ? "Niestety twoja "
+            : "Przeciwna "}{" "}
+          drużyna zaznaczyła czarną kartę.
+        </p>
+      </>
+    );
+  }
 
   if (!game) {
     return <p>Nic nie wiem o tej grze :(</p>;

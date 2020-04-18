@@ -77,4 +77,12 @@ export function arePlayersSame(player1, player2) {
   return player1.nick === player2.nick;
 }
 
+export function selectedCards(game) {
+  if (!game) {
+    return [];
+  }
+
+  return game.board.filter((_, cardIndex) => game.selected[cardIndex]);
+}
+
 export default Game;
