@@ -4,6 +4,7 @@ import * as firebase from "firebase/app";
 // These imports load individual services into the firebase namespace.
 import "firebase/auth";
 import "firebase/analytics";
+import "firebase/database";
 
 let app = null;
 
