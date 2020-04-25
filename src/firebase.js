@@ -23,11 +23,6 @@ if (firebase.apps.length > 0) {
   });
 }
 
-// var gameRef = firebase.database().ref("/game/1");
-// gameRef.on("value", function (gameSnapshot) {
-//   console.log("listener", gameSnapshot.val());
-// });
-
 // remember to off listeners
 
 export default app;

@@ -2,7 +2,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { component, global } from "../src/navigation/styles";
-import { loadGame, loadPlayer, updateGame, updatePlayer } from "../src/store";
+import {
+  loadGame,
+  loadPlayer,
+  updateGame,
+  updatePlayer,
+  watchGame,
+} from "../src/store";
 import { addPlayer } from "../src/game";
 
 const Join = () => {
@@ -29,7 +35,7 @@ const Join = () => {
   const [game, setGame] = useState(null);
   useEffect(() => {
     if (gameName) {
-      loadGame(gameName).then(setGame);
+      loadGame(gameName).then(setGame).then(watchGame(name, setGame));
     }
   }, [gameName]);
 

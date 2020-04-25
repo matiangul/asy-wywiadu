@@ -35,8 +35,21 @@ export function loadGame(gameName) {
     .once("value")
     .then((gameSnapshot) => {
       console.log("load game", gameSnapshot);
-      return normalizeGame(gameSnapshot.val()) || null;
+      const game = gameSnapshot.val();
+      return game ? normalizeGame(game) : null;
     });
+}
+
+export function watchGame(gameName, setGame) {
+  if (gameName) {
+    firebase
+      .database()
+      .ref(`/game/${gameName}`)
+      .on("value", function (gameSnapshot) {
+        const game = gameSnapshot.val();
+        setGame(game ? normalizeGame(game) : null);
+      });
+  }
 }
 
 export function updatePlayer(player, gameName) {

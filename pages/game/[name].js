@@ -8,7 +8,7 @@ import {
   oppositeColor,
   setRoundsPassword,
 } from "../../src/game";
-import { updateGame, loadGame, loadPlayer } from "../../src/store";
+import { updateGame, loadGame, loadPlayer, watchGame } from "../../src/store";
 
 const Game = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const Game = () => {
   const [game, setGame] = useState(null);
   useEffect(() => {
     if (name) {
-      loadGame(name).then(setGame);
+      loadGame(name).then(setGame).then(watchGame(name, setGame));
     }
   }, [name]);
   // load player
@@ -198,6 +198,10 @@ const Game = () => {
 
         .memory-card.blue {
           background: #0631b2bd;
+        }
+
+        .memory-card.yellow {
+          background: yellow;
         }
 
         .memory-card.black {
