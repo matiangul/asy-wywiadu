@@ -159,7 +159,7 @@ const Game = () => {
         body {
           height: 100vh;
           display: flex;
-          background: #fff8f0;
+          background: #ffffff;
         }
 
         #__next {
@@ -190,7 +190,7 @@ const Game = () => {
           padding: 20px;
           backface-visibility: hidden;
           border-radius: 5px;
-          background: #929390ff;
+          background: rgba(77, 139, 49, 1);
         }
 
         .memory-card.red {
