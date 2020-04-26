@@ -160,9 +160,9 @@ const Game = () => {
         }
 
         #__next {
-          width: 640px;
-          height: 640px;
-          margin: auto;
+          width: 90vw;
+          height: 70vh;
+          margin: 5vh auto;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -180,13 +180,15 @@ const Game = () => {
           width: calc(20% - 10px);
           height: calc(20% - 10px);
           margin: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          word-break: break-word;
           position: relative;
           transition: all 0.5s;
           transform-style: preserve-3d;
           transform: scale(1);
-          padding: 20px;
-          backface-visibility: hidden;
-          border-radius: 5px;
+          border-radius: 3px;
           background: #ccc01cc9;
         }
 
@@ -214,6 +216,7 @@ const Game = () => {
         .memory-card p {
           text-align: center;
           color: #333333;
+          margin: 0;
         }
 
         .memory-card.black p {
@@ -221,16 +224,10 @@ const Game = () => {
         }
 
         @media screen and (max-width: 750px) and (max-height: 500px) {
-          #__next {
-            width: 50%;
-            height: 90%;
-          }
-
           .memory-card {
             width: calc(20% - 8px);
             height: calc(20% - 8px);
-            margin: 4px;
-            padding: 10px;
+            margin: 3px;
           }
         }
       `}</style>
