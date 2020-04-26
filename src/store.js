@@ -1,8 +1,9 @@
-import { createGame, normalizeGame } from "./game";
 import firebase from "./firebase";
+import { createGame, normalizeGame } from "./game";
+import { wordsGenerator } from "./words";
 
-export function createNewGame(words, startingColor) {
-  const game = createGame(words, startingColor);
+export function createNewGame(startingColor) {
+  const game = createGame(wordsGenerator(25), startingColor);
 
   return firebase
     .database()

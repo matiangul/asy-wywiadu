@@ -1,4 +1,4 @@
-export default words = [
+const words = [
   "WYBUCH",
   "RYCERZ",
   "ORZEŁ",
@@ -335,3 +335,14 @@ export default words = [
   "PALMA",
   "ATAK",
 ];
+
+export function wordsGenerator(count = 25) {
+  let indexes = new Uint16Array(words.length);
+  window.crypto.getRandomValues(indexes);
+
+  return words
+    .map((word, i) => ({ word, index: indexes[i] }))
+    .sort(({ index: a }, { index: b }) => a - b)
+    .map(({ word }) => word)
+    .slice(0, count);
+}
