@@ -115,7 +115,6 @@ const Game = () => {
               value={game.roundsPassword[game.round]}
               onChange={(e) => {
                 const password = e.target.value;
-                console.log("change rounds password", password);
                 updateGame(game.name, (remoteGame) =>
                   setRoundsPassword(remoteGame, password)
                 );
@@ -129,7 +128,6 @@ const Game = () => {
           <button
             type="button"
             onClick={() => {
-              console.log("give up", player);
               updateGame(game.name, (remoteGame) =>
                 voteForRoundEnd(remoteGame, player)
               );

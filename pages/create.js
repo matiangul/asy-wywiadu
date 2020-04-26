@@ -51,7 +51,6 @@ const Create = () => {
             </p>
             <button
               onClick={() => {
-                console.log("start game", game);
                 updateGame(game.name, (remoteGame) =>
                   startGame(remoteGame)
                 ).then(() => router.push(`/join?name=${game.name}`));

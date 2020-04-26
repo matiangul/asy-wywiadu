@@ -26,7 +26,6 @@ const Board = ({ player, game }) => {
       {game.board.map((card, cardIndex) => (
         <div
           onClick={() => {
-            console.log("toggle card", cardIndex);
             updateGame(game.name, (remoteGame) =>
               toggleCard(remoteGame, player, cardIndex)
             );
