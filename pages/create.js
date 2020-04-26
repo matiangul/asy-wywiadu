@@ -7,36 +7,7 @@ import { startGame } from "../src/game";
 
 const Create = () => {
   const router = useRouter();
-  const [words, setWords] = useState([
-    "WYBUCH",
-    "RYCERZ",
-    "ORZEŁ",
-    "KRÓLIK",
-    "NAUCZYCIEL",
-    "GRA",
-    "STOŁEK",
-    "KLUCZ",
-    "KAPTUR",
-    "JABŁKO",
-    "GRZMOT",
-    "ANGLIA",
-    "ANTARKTYDA",
-    "PLAŻA",
-    "KRZYŻ",
-    "ŚWIERSZCZ",
-    "KORONA",
-    "DOKTOR",
-    "LONDYN",
-    "DUSZA",
-    "BOMBA",
-    "GŁADKI",
-    "OGIEŃ",
-    "LAKIER",
-    "CEBULA",
-    "FLET",
-    "PŁYTA",
-    "BICZ",
-  ]);
+  const [words, setWords] = useState([]);
   const [word, setWord] = useState("");
   const [startingColor, changeStartingColor] = useState("red");
   const [game, setGame] = useState({ name: null });
