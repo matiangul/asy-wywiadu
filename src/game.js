@@ -1,11 +1,10 @@
 import { v4 as uuid } from "uuid";
 
 export function createGame(words, startingColor) {
-  const limitedWords = words.slice(0, 25);
-  const coloredWords = colorWords(limitedWords, startingColor);
+  const coloredWords = colorWords(words, startingColor);
 
   return {
-    board: limitedWords.map((word) => ({
+    board: words.map((word) => ({
       word,
       votesPerRound: [[]],
       color: coloredWords[word],
@@ -36,7 +35,7 @@ export function normalizeGame(game) {
 }
 
 function colorWords(words, startingColor) {
-  let indexes = new Uint8Array(25);
+  let indexes = new Uint16Array(words.length);
   window.crypto.getRandomValues(indexes);
   const otherColor = oppositeColor(startingColor);
 
