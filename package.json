@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^5.15.5",
-    "@zeit/next-source-maps": "^0.0.3",
+    "@zeit/next-source-maps": "0.0.4-canary.1",
     "firebase": "^7.14.1",
     "next": "9.3.4",
     "react": "16.13.1",
