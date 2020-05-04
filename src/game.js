@@ -1,11 +1,10 @@
 import { v4 as uuid } from "uuid";
 
 export function createGame(words, startingColor) {
-  const limitedWords = words.slice(0, 25);
-  const coloredWords = colorWords(limitedWords, startingColor);
+  const coloredWords = colorWords(words, startingColor);
 
   return {
-    board: limitedWords.map((word) => ({
+    board: words.map((word) => ({
       word,
       votesPerRound: [[]],
       color: coloredWords[word],
@@ -30,13 +29,11 @@ export function normalizeGame(game) {
   game.players = game.players || [];
   game.roundsEndRoundVotes = game.roundsEndRoundVotes || [];
 
-  console.log(game);
-
   return game;
 }
 
 function colorWords(words, startingColor) {
-  let indexes = new Uint8Array(25);
+  let indexes = new Uint16Array(words.length);
   window.crypto.getRandomValues(indexes);
   const otherColor = oppositeColor(startingColor);
 
@@ -50,10 +47,10 @@ function colorWords(words, startingColor) {
           i < 9
             ? startingColor
             : i === 9
-            ? "black"
+            ? "bomb"
             : i < 18
             ? otherColor
-            : "yellow",
+            : "miss",
       }),
       {}
     );
@@ -131,8 +128,6 @@ export function toggleCard(game, player, cardIndex) {
 
     const changedGame = cloneGame(game);
 
-    console.log(changedGame);
-
     changedGame.board[cardIndex].votesPerRound[changedGame.round] = (
       (changedGame.board[cardIndex].votesPerRound || [])[changedGame.round] ||
       []
@@ -154,7 +149,7 @@ export function toggleCard(game, player, cardIndex) {
     ) {
       changedGame.selected[cardIndex] = true;
       if (
-        changedGame.board[cardIndex].color === "yellow" ||
+        changedGame.board[cardIndex].color === "miss" ||
         changedGame.board[cardIndex].color === oppositeColor(player.color)
       ) {
         nextRound(changedGame);
@@ -174,7 +169,6 @@ export function startGame(game) {
 }
 
 export function addPlayer(game, player) {
-  console.log("add player game", game);
   const players = "players" in game ? game.players : [];
 
   if (players.find((p) => p.nick === player.nick)) {
