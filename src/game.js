@@ -29,8 +29,6 @@ export function normalizeGame(game) {
   game.players = game.players || [];
   game.roundsEndRoundVotes = game.roundsEndRoundVotes || [];
 
-  console.log(game);
-
   return game;
 }
 
@@ -130,8 +128,6 @@ export function toggleCard(game, player, cardIndex) {
 
     const changedGame = cloneGame(game);
 
-    console.log(changedGame);
-
     changedGame.board[cardIndex].votesPerRound[changedGame.round] = (
       (changedGame.board[cardIndex].votesPerRound || [])[changedGame.round] ||
       []
@@ -173,7 +169,6 @@ export function startGame(game) {
 }
 
 export function addPlayer(game, player) {
-  console.log("add player game", game);
   const players = "players" in game ? game.players : [];
 
   if (players.find((p) => p.nick === player.nick)) {
