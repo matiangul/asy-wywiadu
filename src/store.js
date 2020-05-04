@@ -1,15 +1,15 @@
-import { createGame, normalizeGame } from "./game";
 import firebase from "./firebase";
+import { createGame, normalizeGame } from "./game";
+import { wordsGenerator } from "./words";
 
-export function createNewGame(words, startingColor) {
-  const game = createGame(words, startingColor);
+export function createNewGame(startingColor) {
+  const game = createGame(wordsGenerator(25), startingColor);
 
   return firebase
     .database()
     .ref(`/game/${game.name}`)
     .set(game)
     .then(() => {
-      console.log("create game", game);
       return game;
     });
 }
@@ -24,7 +24,6 @@ export function updateGame(gameName, change) {
       }
       return game;
     })
-    .then(({ snapshot }) => console.log("after transaction", snapshot.val()))
     .catch((err) => console.error(err));
 }
 
@@ -34,7 +33,6 @@ export function loadGame(gameName) {
     .ref(`/game/${gameName}`)
     .once("value")
     .then((gameSnapshot) => {
-      console.log("load game", gameSnapshot);
       const game = gameSnapshot.val();
       return game ? normalizeGame(game) : null;
     });
@@ -53,14 +51,12 @@ export function watchGame(gameName, setGame) {
 }
 
 export function updatePlayer(player, gameName) {
-  console.log("update player", player, gameName);
   return Promise.resolve(
     sessionStorage.setItem(`player-${gameName}`, JSON.stringify(player))
   );
 }
 
 export function loadPlayer(gameName) {
-  console.log("get", `player-${gameName}`);
   return Promise.resolve(
     JSON.parse(sessionStorage.getItem(`player-${gameName}`))
   );

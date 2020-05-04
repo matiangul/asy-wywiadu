@@ -110,7 +110,6 @@ const Join = () => {
                     type="submit"
                     onClick={(e) => {
                       e.preventDefault();
-                      console.log("join game", game);
                       updateGame(game.name, (remoteGame) =>
                         addPlayer(remoteGame, player)
                       )
