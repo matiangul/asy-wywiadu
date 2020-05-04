@@ -47,10 +47,10 @@ function colorWords(words, startingColor) {
           i < 8
             ? startingColor
             : i === 8
-            ? "black"
+            ? "bomb"
             : i > 18
             ? otherColor
-            : "yellow",
+            : "miss",
       }),
       {}
     );
@@ -149,7 +149,7 @@ export function toggleCard(game, player, cardIndex) {
     ) {
       changedGame.selected[cardIndex] = true;
       if (
-        changedGame.board[cardIndex].color === "yellow" ||
+        changedGame.board[cardIndex].color === "miss" ||
         changedGame.board[cardIndex].color === oppositeColor(player.color)
       ) {
         nextRound(changedGame);

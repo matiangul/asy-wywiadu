@@ -28,10 +28,10 @@ const Game = () => {
     }
   }, [name]);
 
-  const selectedBlackCard = selectedCards(game).find(
-    ({ color }) => "black" === color
+  const selectedBombCard = selectedCards(game).find(
+    ({ color }) => "bomb" === color
   );
-  if (game && player && selectedBlackCard) {
+  if (game && player && selectedBombCard) {
     return (
       <>
         {game.roundsColor[game.round] !== player.color && (
@@ -157,6 +157,7 @@ const Game = () => {
         body {
           height: 100vh;
           display: flex;
+          background: #ffffff;
         }
 
         #__next {
@@ -189,23 +190,23 @@ const Game = () => {
           transform-style: preserve-3d;
           transform: scale(1);
           border-radius: 3px;
-          background: #ccc01cc9;
+          background: rgba(77, 139, 49, 1);
         }
 
         .memory-card.red {
-          background: #b20606bd;
+          background: #bf211eff;
         }
 
         .memory-card.blue {
-          background: #0631b2bd;
+          background: #2274a5ff;
         }
 
-        .memory-card.yellow {
-          background: yellow;
+        .memory-card.miss {
+          background: #ffc800ff;
         }
 
-        .memory-card.black {
-          background: #000000bd;
+        .memory-card.bomb {
+          background: #0a100dff;
         }
 
         .memory-card:active {
@@ -215,12 +216,12 @@ const Game = () => {
 
         .memory-card p {
           text-align: center;
-          color: #333333;
+          color: #ffffffff;
           margin: 0;
         }
 
-        .memory-card.black p {
-          color: #ffffff;
+        .memory-card.miss p {
+          color: #000000ff;
         }
 
         @media screen and (max-width: 750px) and (max-height: 500px) {
