@@ -44,11 +44,11 @@ function colorWords(words, startingColor) {
       (colored, { word }, i) => ({
         ...colored,
         [word]:
-          i < 8
+          i < 9
             ? startingColor
-            : i === 8
+            : i === 9
             ? "bomb"
-            : i > 18
+            : i < 18
             ? otherColor
             : "miss",
       }),
