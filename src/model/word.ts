@@ -1,4 +1,6 @@
-const words = [
+export type Word = string;
+
+const words: Word[] = [
   "WYBUCH",
   "RYCERZ",
   "ORZEŁ",
@@ -336,7 +338,11 @@ const words = [
   "ATAK",
 ];
 
-export function wordsGenerator(count = 25) {
+/**
+ * Randomly chooses specified amount of words from words base
+ * @param count amount of words to be used in game
+ */
+export function wordsGenerator(count: number = 25): Word[] {
   let indexes = new Uint16Array(words.length);
   window.crypto.getRandomValues(indexes);
 

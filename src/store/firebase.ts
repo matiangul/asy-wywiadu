@@ -6,7 +6,7 @@ import "firebase/auth";
 import "firebase/analytics";
 import "firebase/database";
 
-let app = null;
+let app: firebase.app.App = null;
 
 if (firebase.apps.length > 0) {
   app = firebase.apps[0];
@@ -22,7 +22,5 @@ if (firebase.apps.length > 0) {
     measurementId: "G-WREW8047ZL",
   });
 }
-
-// remember to off listeners
 
 export default app;

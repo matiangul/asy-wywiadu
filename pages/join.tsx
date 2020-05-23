@@ -1,27 +1,33 @@
+import * as Sentry from "@sentry/browser";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { component, global } from "../src/navigation/styles";
+import { component, global } from "../src/components/styles/welcome";
+import { TeamColor } from "../src/model/color";
+import { addPlayer } from "../src/model/game";
+import { Player, Role } from "../src/model/player";
 import {
   loadGame,
   loadPlayer,
   updateGame,
   updatePlayer,
   watchGame,
-} from "../src/store";
-import { addPlayer } from "../src/game";
+} from "../src/store/repository";
 
-const Join = () => {
+export default () => {
   const router = useRouter();
-  // game name
+
   const [gameName, choseGameName] = useState("");
-  useEffect(() => choseGameName(router.query.name || ""), [router.query.name]);
-  // game player
-  const [player, setPlayer] = useState({
+  useEffect(() => choseGameName((router.query.name as string) || ""), [
+    router.query.name,
+  ]);
+
+  const defaultPlayerSettings = {
     nick: "",
-    color: "red",
-    role: "guesser",
-  });
+    color: "red" as TeamColor,
+    role: "guesser" as Role,
+  };
+  const [player, setPlayer] = useState<Player>(defaultPlayerSettings);
   useEffect(() => {
     if (gameName) {
       loadPlayer(gameName).then((storedPlayer) => {
@@ -31,11 +37,13 @@ const Join = () => {
       });
     }
   }, [gameName]);
-  // game state
+
   const [game, setGame] = useState(null);
   useEffect(() => {
     if (gameName) {
-      loadGame(gameName).then(setGame).then(watchGame(name, setGame));
+      loadGame(gameName)
+        .then(setGame)
+        .then(() => watchGame(gameName, setGame));
     }
   }, [gameName]);
 
@@ -79,7 +87,10 @@ const Join = () => {
                 value={player.color}
                 onChange={(e) => {
                   const color = e.target.value;
-                  setPlayer((player) => ({ ...player, color }));
+                  setPlayer((player) => ({
+                    ...player,
+                    color: color as TeamColor,
+                  }));
                 }}
               >
                 <option value="red">Czerwoni</option>
@@ -91,7 +102,7 @@ const Join = () => {
                 value={player.role}
                 onChange={(e) => {
                   const role = e.target.value;
-                  setPlayer((player) => ({ ...player, role }));
+                  setPlayer((player) => ({ ...player, role: role as Role }));
                 }}
               >
                 <option value="leader">Lider</option>
@@ -100,12 +111,6 @@ const Join = () => {
 
               {player.nick && player.color && player.role && (
                 <>
-                  <p>
-                    Dołącz do gry jako "{player.nick}",{" "}
-                    {player.role === "leader" ? "lider " : "zgadywacz "}
-                    drużyny{" "}
-                    {player.color === "red" ? "czerwonych" : "niebieskich"}
-                  </p>
                   <button
                     type="submit"
                     onClick={(e) => {
@@ -115,7 +120,7 @@ const Join = () => {
                       )
                         .then(() => updatePlayer(player, gameName))
                         .then(() => router.push(`/game/${gameName}`))
-                        .catch((e) => alert(e));
+                        .catch((err) => Sentry.captureException(err));
                     }}
                   >
                     Dołącz
@@ -140,5 +145,3 @@ const Join = () => {
     </div>
   );
 };
-
-export default Join;
