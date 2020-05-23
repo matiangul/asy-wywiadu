@@ -1,14 +1,16 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { startGame } from "../src/game";
-import { component, global } from "../src/navigation/styles";
-import { createNewGame, updateGame } from "../src/store";
+import { TeamColor } from "../src/model/color";
+import { Game, createGame, startGame } from "../src/model/game";
+import { createNewGame, updateGame } from "../src/store/repository";
+import { wordsGenerator } from "../src/model/word";
+import { component, global } from "../src/components/styles/welcome";
 
 const Create = () => {
   const router = useRouter();
-  const [startingColor, changeStartingColor] = useState("red");
-  const [game, setGame] = useState({ name: null });
+  const [startingColor, changeStartingColor] = useState<TeamColor>("red");
+  const [game, setGame] = useState<Partial<Game>>({ name: null });
 
   return (
     <div className="container">
@@ -24,7 +26,7 @@ const Create = () => {
         <h5>Kto zaczyna?</h5>
         <select
           value={startingColor}
-          onChange={(e) => changeStartingColor(e.target.value)}
+          onChange={(e) => changeStartingColor(e.target.value as TeamColor)}
           disabled={!!game.name}
         >
           <option value="red">Czerwoni</option>
@@ -32,7 +34,13 @@ const Create = () => {
         </select>
 
         {!game.name && (
-          <button onClick={() => createNewGame(startingColor).then(setGame)}>
+          <button
+            onClick={() =>
+              createNewGame(createGame(wordsGenerator(25), startingColor)).then(
+                setGame
+              )
+            }
+          >
             Stwórz grę
           </button>
         )}
@@ -51,7 +59,6 @@ const Create = () => {
             </p>
             <button
               onClick={() => {
-                console.log("start game", game);
                 updateGame(game.name, (remoteGame) =>
                   startGame(remoteGame)
                 ).then(() => router.push(`/join?name=${game.name}`));

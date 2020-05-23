@@ -1,5 +1,5 @@
 export const component = (
-  <style jsx="true">{`
+  <style jsx>{`
     .container {
       min-height: 100vh;
       padding: 0 0.5rem;
@@ -128,7 +128,7 @@ export const component = (
 );
 
 export const global = (
-  <style jsx="true" global>{`
+  <style jsx global>{`
     html,
     body {
       padding: 0;

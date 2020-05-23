@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import { component, global } from "../src/navigation/styles";
+import { component, global } from "../src/components/styles/welcome";
 
-const Home = () => {
+export default () => {
   return (
     <div className="container">
       <Head>
@@ -44,5 +44,3 @@ const Home = () => {
     </div>
   );
 };
-
-export default Home;
