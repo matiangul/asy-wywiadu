@@ -4,7 +4,7 @@ import { oppositeTeamColor } from "../../src/model/color";
 import {
   allTeamCards,
   Game,
-  isBlackCardSelected,
+  isBombCardSelected,
   isPlayerInTheGame,
   isPlayersRound,
   selectedTeamCards,
@@ -48,7 +48,7 @@ export default () => {
     return <p>Ktoś ty?</p>;
   }
 
-  if (isBlackCardSelected(game)) {
+  if (isBombCardSelected(game)) {
     return !isPlayersRound(game, player) ? (
       <>
         <p className="text">Jesteś zwycięzcą!</p>
@@ -143,12 +143,13 @@ export default () => {
         body {
           height: 100vh;
           display: flex;
+          background: #ffffff;
         }
 
         #__next {
-          width: 640px;
-          height: 640px;
-          margin: auto;
+          width: 90vw;
+          height: 70vh;
+          margin: 5vh auto;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -166,30 +167,32 @@ export default () => {
           width: calc(20% - 10px);
           height: calc(20% - 10px);
           margin: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          word-break: break-word;
           position: relative;
           transition: all 0.5s;
           transform-style: preserve-3d;
           transform: scale(1);
-          padding: 20px;
-          backface-visibility: hidden;
-          border-radius: 5px;
-          background: #ccc01cc9;
+          border-radius: 3px;
+          background: rgba(77, 139, 49, 1);
         }
 
         .word-card.red {
-          background: #b20606bd;
+          background: #bf211eff;
         }
 
         .word-card.blue {
-          background: #0631b2bd;
+          background: #2274a5ff;
         }
 
-        .word-card.yellow {
-          background: yellow;
+        .word-card.miss {
+          background: #ffc800ff;
         }
 
-        .word-card.black {
-          background: #000000bd;
+        .word-card.bomb {
+          background: #0a100dff;
         }
 
         .word-card:active {
@@ -199,24 +202,19 @@ export default () => {
 
         .word-card p {
           text-align: center;
-          color: #333333;
+          color: #ffffffff;
+          margin: 0;
         }
 
-        .word-card.black p {
-          color: #ffffff;
+        .word-card.miss p {
+          color: #000000ff;
         }
 
         @media screen and (max-width: 750px) and (max-height: 500px) {
-          #__next {
-            width: 50%;
-            height: 90%;
-          }
-
           .word-card {
             width: calc(20% - 8px);
             height: calc(20% - 8px);
-            margin: 4px;
-            padding: 10px;
+            margin: 3px;
           }
         }
       `}</style>

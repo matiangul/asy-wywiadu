@@ -122,8 +122,8 @@ export function selectedCards(game: Game): Card[] {
   return game.selected.map((cardIndex) => game.board[cardIndex]);
 }
 
-export function isBlackCardSelected(game: Game): boolean {
-  return !!selectedCards(game).find(({ color }) => "black" === color);
+export function isBombCardSelected(game: Game): boolean {
+  return !!selectedCards(game).find(({ color }) => "bomb" === color);
 }
 
 export function isPlayerInTheGame(game: Game, player: Player): boolean {

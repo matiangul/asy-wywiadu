@@ -1,6 +1,6 @@
 import { Word } from "./word";
 
-export type Color = "red" | "blue" | "black" | "yellow";
+export type Color = "red" | "blue" | "bomb" | "miss";
 
 export type TeamColor = "red" | "blue";
 
@@ -8,7 +8,7 @@ export function isRoundTerminatingColor(
   cardColor: Color,
   teamColor: TeamColor
 ): boolean {
-  return cardColor === "yellow" || cardColor === oppositeTeamColor(teamColor);
+  return cardColor === "miss" || cardColor === oppositeTeamColor(teamColor);
 }
 
 export function isTeamColor(color?: any): color is TeamColor {
@@ -36,13 +36,13 @@ export function colorWords(
       (colored, { word }, i) =>
         colored.set(
           word,
-          i < 8
+          i < 9
             ? startingColor
-            : i === 8
-            ? "black"
-            : i > 18
+            : i === 9
+            ? "bomb"
+            : i < 18
             ? otherColor
-            : "yellow"
+            : "miss"
         ),
       new Map()
     );
