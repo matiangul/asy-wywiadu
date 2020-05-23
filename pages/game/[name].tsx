@@ -206,6 +206,10 @@ export default () => {
           margin: 0;
         }
 
+        .word-card p.selected {
+          text-decoration: line-through;
+        }
+
         .word-card.miss p {
           color: #000000ff;
         }

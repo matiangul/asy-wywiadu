@@ -223,8 +223,12 @@ export function selectedTeamCards(game: Game, teamColor: TeamColor): Card[] {
   return selectedCards(game).filter(({ color }) => teamColor === color);
 }
 
-function isCardSelected(game: Game, cardIndex: CardIndex): boolean {
+export function isCardSelected(game: Game, cardIndex: CardIndex): boolean {
   return game.selected.indexOf(cardIndex) >= 0;
+}
+
+export function generateRandomInteger(min: number, max: number): number {
+  return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
 export function roundsColor(game: Game): TeamColor {
