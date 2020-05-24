@@ -4,10 +4,12 @@ import {
   Game,
   getCardVotesPerRound,
   isCardsColorVisible,
+  isCardSelected,
   toggleCard,
 } from "../model/game";
 import { Player } from "../model/player";
 import { updateGame } from "../store/repository";
+import { getUniqueSelectedCardStyle } from "./styles/selectedCardStyler";
 
 interface Props {
   player: Player;
@@ -26,10 +28,13 @@ export default ({ player, game }: Props) => (
         className={`word-card ${
           isCardsColorVisible(game, player, cardIndex) ? card.color : ""
         }`}
+        style={
+          isCardSelected(game, cardIndex) ? getUniqueSelectedCardStyle() : {}
+        }
         key={card.word}
       >
         {areWordsVisible(game) && (
-          <p>
+          <p className={isCardSelected(game, cardIndex) ? `selected` : ""}>
             {card.word}
             {areVotesVisible(game, cardIndex) &&
               ".".repeat(getCardVotesPerRound(game, cardIndex).length)}

@@ -223,7 +223,7 @@ export function selectedTeamCards(game: Game, teamColor: TeamColor): Card[] {
   return selectedCards(game).filter(({ color }) => teamColor === color);
 }
 
-function isCardSelected(game: Game, cardIndex: CardIndex): boolean {
+export function isCardSelected(game: Game, cardIndex: CardIndex): boolean {
   return game.selected.indexOf(cardIndex) >= 0;
 }
 

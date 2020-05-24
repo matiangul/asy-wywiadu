@@ -24,7 +24,7 @@ export default () => {
   const router = useRouter();
   const { name } = router.query;
 
-  const [game, setGame] = useState<Game | null>(null);
+  const [game, setGame] = useState<Game | null | undefined>(undefined);
   useEffect(() => {
     if (name) {
       loadGame(name as string)
@@ -33,18 +33,26 @@ export default () => {
     }
   }, [name]);
 
-  const [player, setPlayer] = useState<Player | null>(null);
+  const [player, setPlayer] = useState<Player | null | undefined>(undefined);
   useEffect(() => {
     if (name) {
       loadPlayer(name as string).then(setPlayer);
     }
   }, [name]);
 
-  if (!game) {
+  if (game === undefined) {
+    return <p>Momencik, już szukam tej gry w internetach...</p>;
+  }
+
+  if (player === undefined) {
+    return <p>Już już, daj mi tylko sprawdzić ktoś ty jest...</p>;
+  }
+
+  if (game === null) {
     return <p>Nic nie wiem o tej grze :(</p>;
   }
 
-  if (!player || !isPlayerInTheGame(game, player)) {
+  if (player === null || !isPlayerInTheGame(game, player)) {
     return <p>Ktoś ty?</p>;
   }
 
@@ -204,6 +212,10 @@ export default () => {
           text-align: center;
           color: #ffffffff;
           margin: 0;
+        }
+
+        .word-card p.selected {
+          text-decoration: line-through;
         }
 
         .word-card.miss p {
