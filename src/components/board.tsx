@@ -4,12 +4,12 @@ import {
   Game,
   getCardVotesPerRound,
   isCardsColorVisible,
-  toggleCard,
   isCardSelected,
-  generateRandomInteger,
+  toggleCard,
 } from "../model/game";
 import { Player } from "../model/player";
 import { updateGame } from "../store/repository";
+import { getUniqueSelectedCardStyle } from "./styles/selectedCardStyler";
 
 interface Props {
   player: Player;
@@ -29,11 +29,7 @@ export default ({ player, game }: Props) => (
           isCardsColorVisible(game, player, cardIndex) ? card.color : ""
         }`}
         style={
-          isCardSelected(game, cardIndex)
-            ? {
-                transform: `rotate(${generateRandomInteger(-9, 9)}deg)`,
-              }
-            : {}
+          isCardSelected(game, cardIndex) ? getUniqueSelectedCardStyle() : {}
         }
         key={card.word}
       >

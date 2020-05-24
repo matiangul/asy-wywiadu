@@ -38,7 +38,7 @@ export default () => {
     }
   }, [gameName]);
 
-  const [game, setGame] = useState(null);
+  const [game, setGame] = useState(undefined);
   useEffect(() => {
     if (gameName) {
       loadGame(gameName)
@@ -68,7 +68,7 @@ export default () => {
               choseGameName(name);
             }}
           />
-          {game ? (
+          {game && (
             <>
               <p>Jak się zwiesz?</p>
               <input
@@ -128,9 +128,11 @@ export default () => {
                 </>
               )}
             </>
-          ) : (
-            <p>Nie ma takiej gry, sory :(</p>
           )}
+          {game === undefined && (
+            <p>Momencik, już szukam tej gry w internetach...</p>
+          )}
+          {game === null && <p>Nie ma takiej gry, sory :(</p>}
         </form>
       </main>
 
