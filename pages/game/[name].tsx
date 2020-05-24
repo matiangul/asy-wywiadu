@@ -64,7 +64,7 @@ export default () => {
       </>
     ) : (
       <>
-        <p className="text">Pregraliście :(</p>
+        <p className="text">Przegraliście :(</p>
         <p className="text">Niestety twoja drużyna zaznaczyła czarną kartę.</p>
       </>
     );
@@ -88,7 +88,7 @@ export default () => {
   ) {
     return (
       <>
-        <p className="text">Pregraliście :(</p>
+        <p className="text">Przegraliście :(</p>
         <p className="text">
           Niestety przeciwna drużyna ma już wszystkie swoje hasła.
         </p>
