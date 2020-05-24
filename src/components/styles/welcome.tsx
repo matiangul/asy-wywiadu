@@ -42,6 +42,10 @@ export const component = (
       text-decoration: none;
     }
 
+    a.share {
+      color: #2274a5ff;
+    }
+
     .title a {
       color: #0070f3;
       text-decoration: none;

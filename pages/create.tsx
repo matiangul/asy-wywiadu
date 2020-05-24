@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Share from "../src/components/share";
 import { component, global } from "../src/components/styles/welcome";
 import { TeamColor } from "../src/model/color";
 import { createGame, Game, startGame } from "../src/model/game";
@@ -47,16 +48,8 @@ export default () => {
 
         {game.name && (
           <>
-            <p>
-              Gra{" "}
-              <a
-                target="_blank"
-                href={`${window.location.protocol}//${window.location.host}/join?name=${game.name}`}
-              >
-                {`${window.location.protocol}//${window.location.host}/join?name=${game.name}`}
-              </a>{" "}
-              czeka na rozpoczęcie
-            </p>
+            <Share gameName={game.name} />
+            <p>A następnie:</p>
             <button
               onClick={() => {
                 updateGame(game.name, (remoteGame) =>
