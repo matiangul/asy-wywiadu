@@ -176,6 +176,7 @@ export default () => {
           height: calc(20% - 10px);
           margin: 5px;
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
           word-break: break-word;
@@ -218,6 +219,14 @@ export default () => {
           text-decoration: line-through;
         }
 
+        .word-card p.voted-word {
+          display: none;
+        }
+
+        .word-card p.voted-info {
+          font-size: 0.85em;
+        }
+
         .word-card.miss p {
           color: #000000ff;
         }
@@ -225,8 +234,12 @@ export default () => {
         @media screen and (max-width: 750px) and (max-height: 500px) {
           .word-card {
             width: calc(20% - 8px);
-            height: calc(20% - 8px);
+            height: calc(27% - 8px);
             margin: 3px;
+          }
+
+          .word-card p.voted {
+            font-size: 0.65em;
           }
         }
       `}</style>
