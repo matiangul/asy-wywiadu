@@ -293,6 +293,16 @@ export function getCardVotesPerRound(game: Game, cardIndex: CardIndex): Votes {
   return Array.from(new Set(game.board[cardIndex].votesPerRound[game.round]));
 }
 
+export function isMyVoteForCardInRound(
+  game: Game,
+  player: Player,
+  cardIndex: CardIndex
+): boolean {
+  return !!getCardVotesPerRound(game, cardIndex).find(
+    (vote) => vote === getPlayersVote(player)
+  );
+}
+
 function addCardVoteForRound(
   game: Game,
   vote: Vote,
