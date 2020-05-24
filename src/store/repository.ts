@@ -79,6 +79,6 @@ export function updatePlayer(
 
 export function loadPlayer(gameName: Game["name"]): Promise<Player | null> {
   return Promise.resolve(
-    JSON.parse(sessionStorage.getItem(`player-${gameName}`))
+    JSON.parse(sessionStorage.getItem(`player-${gameName}`) || null)
   );
 }
