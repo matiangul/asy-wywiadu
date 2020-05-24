@@ -183,7 +183,9 @@ export function toggleCard(
   ) {
     const changedGame = cloneGame(game);
 
-    if (!isPlayersCardVoteInRound(changedGame, player, cardIndex)) {
+    removeCardVoteForRoung(changedGame, getPlayersVote(player), cardIndex);
+
+    if (!isPlayersCardVoteInRound(game, player, cardIndex)) {
       addCardVoteForRound(changedGame, getPlayersVote(player), cardIndex);
     }
 
@@ -297,6 +299,16 @@ function addCardVoteForRound(
   cardIndex: CardIndex
 ): void {
   game.board[cardIndex].votesPerRound[game.round].push(vote);
+}
+
+function removeCardVoteForRoung(
+  game: Game,
+  vote: Vote,
+  cardIndex: CardIndex
+): void {
+  game.board[cardIndex].votesPerRound[game.round] = game.board[
+    cardIndex
+  ].votesPerRound[game.round].filter((existingVote) => existingVote !== vote);
 }
 
 function isPlayersCardVoteInRound(
