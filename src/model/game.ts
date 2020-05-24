@@ -286,7 +286,11 @@ export function isCardsColorVisible(
 }
 
 export function areVotesVisible(game: Game, cardIndex: CardIndex): boolean {
-  return !!game.started && getCardVotesPerRound(game, cardIndex).length > 0;
+  return (
+    !!game.started &&
+    !isCardSelected(game, cardIndex) &&
+    getCardVotesPerRound(game, cardIndex).length > 0
+  );
 }
 
 export function getCardVotesPerRound(game: Game, cardIndex: CardIndex): Votes {
