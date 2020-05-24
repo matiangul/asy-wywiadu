@@ -132,6 +132,11 @@ export default () => {
       )}
 
       <p className="text">
+        Jesteś
+        {isGuesser(player) ? " zgadywaczem " : " liderem "}w drużynie
+        {player.color === "red" ? " czerwonej." : " niebieskiej."}
+      </p>
+      <p className="text">
         Kolej na
         {isPlayersRound(game, player) ? " twoją " : " drugą "}
         drużynę
