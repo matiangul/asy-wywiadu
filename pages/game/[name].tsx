@@ -127,7 +127,7 @@ export default () => {
             );
           }}
         >
-          Poddaje się w tej rundzie
+          Koniec rundy
         </button>
       )}
 
