@@ -40,6 +40,8 @@ export default () => {
     }
   }, [name]);
 
+  const [password, setPassword] = useState<string>("");
+
   if (game === undefined) {
     return <p>Momencik, już szukam tej gry w internetach...</p>;
   }
@@ -106,15 +108,25 @@ export default () => {
           <input
             type="text"
             name="password"
-            placeholder="Kostka 2"
-            value={game.roundsPassword[game.round]}
+            placeholder={game.roundsPassword[game.round] || 'Narzędzie 3'}
+            disabled={game.roundsPassword[game.round].length > 0}
+            value={password}
             onChange={(e) => {
               const password = e.target.value;
-              updateGame(game.name, (remoteGame) =>
-                setRoundsPassword(remoteGame, password)
-              );
+              setPassword(password);
             }}
           />
+          <button
+            type="button"
+            disabled={game.roundsPassword[game.round].length > 0}
+            onClick={() =>
+              updateGame(game.name, (remoteGame) =>
+                setRoundsPassword(remoteGame, password)
+              )
+            }
+          >
+            Zatwierdź hasło
+          </button>
         </>
       )}
 
