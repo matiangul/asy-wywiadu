@@ -2,6 +2,7 @@ import firebase from "./firebase";
 import { normalizeGame, Game, addPlayer } from "../model/game";
 import * as Sentry from "@sentry/browser";
 import { Player, arePlayersSame } from "../model/player";
+import isEqual from "lodash/isequal";
 
 export async function createNewGame(game: Game): Promise<Game> {
   try {
@@ -44,10 +45,12 @@ async function unhandledUpdateGame(
       return remoteGame;
     });
   const actual = normalizeGame(transaction.snapshot.val());
-  if (JSON.stringify(expected) === JSON.stringify(actual)) {
+  if (isEqual(expected, actual)) {
     return actual;
   }
-  Sentry.captureException(new Error(`Game update failed. Expected ${expected}. Actual ${actual}.`));
+  Sentry.captureException(
+    new Error(`Game update failed. Expected ${expected}. Actual ${actual}.`)
+  );
   throw new Error(`Game update failed. Please try again.`);
 }
 
