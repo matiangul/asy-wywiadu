@@ -16,9 +16,9 @@ export async function createNewGame(game: Game): Promise<Game> {
 export async function updateGame(
   gameName: Game["name"],
   modifyGame: (remoteGame: Game) => Game
-): Promise<void> {
+): Promise<Game> {
   try {
-    await unhandledUpdateGame(gameName, modifyGame);
+    return await unhandledUpdateGame(gameName, modifyGame);
   } catch (err) {
     Sentry.captureException(err);
   }
@@ -30,13 +30,25 @@ export async function updateGame(
 async function unhandledUpdateGame(
   gameName: Game["name"],
   modifyGame: (remoteGame: Game) => Game
-): Promise<void> {
-  await firebase
+): Promise<Game> {
+  let expected: Game;
+  const transaction = await firebase
     .database()
     .ref(`/game/${gameName}`)
-    .transaction((remoteGame?: Partial<Game>) =>
-      !!remoteGame ? modifyGame(normalizeGame(remoteGame)) : remoteGame
-    );
+    .transaction((remoteGame?: Partial<Game>) => {
+      if (!!remoteGame) {
+        expected = modifyGame(normalizeGame(remoteGame));
+        return expected;
+      }
+
+      return remoteGame;
+    });
+  const actual = normalizeGame(transaction.snapshot.val());
+  if (JSON.stringify(expected) === JSON.stringify(actual)) {
+    return actual;
+  }
+  Sentry.captureException(new Error(`Game update failed. Expected ${expected}. Actual ${actual}.`));
+  throw new Error(`Game update failed. Please try again.`);
 }
 
 export async function loadGame(gameName: Game["name"]): Promise<Game | null> {
@@ -75,15 +87,17 @@ export async function watchGame(
   }
 }
 
-export async function addGamePlayer(player: Player, game: Game): Promise<void> {
-  return unhandledUpdateGame(game.name, (remoteGame) => {
-    const newGame = addPlayer(remoteGame, player);
-    sessionStorage.setItem(
-      `player-${newGame.name}`,
-      newGame.players.findIndex((existingPlayer) => arePlayersSame(existingPlayer, player)).toString()
-    );
-    return newGame;
-  });
+export async function addGamePlayer(player: Player, game: Game): Promise<Game> {
+  const newGame = await unhandledUpdateGame(game.name, (remoteGame) =>
+    addPlayer(remoteGame, player)
+  );
+  sessionStorage.setItem(
+    `player-${newGame.name}`,
+    newGame.players
+      .findIndex((existingPlayer) => arePlayersSame(existingPlayer, player))
+      .toString()
+  );
+  return newGame;
 }
 
 export function loadPlayer(game: Game): Promise<Player | null> {
