@@ -134,7 +134,7 @@ export default () => {
       )}
 
       <p className="text">
-        Jesteś
+        {player.nick} jesteś
         {isGuesser(player) ? " zgadywaczem " : " liderem "}w drużynie
         {player.color === "red" ? " czerwonej." : " niebieskiej."}
       </p>
