@@ -1,7 +1,7 @@
 import firebase from "./firebase";
-import { normalizeGame, Game } from "../model/game";
+import { normalizeGame, Game, addPlayer } from "../model/game";
 import * as Sentry from "@sentry/browser";
-import { Player } from "../model/player";
+import { Player, arePlayersSame } from "../model/player";
 
 export async function createNewGame(game: Game): Promise<Game> {
   try {
@@ -13,23 +13,30 @@ export async function createNewGame(game: Game): Promise<Game> {
   }
 }
 
-/**
- * sometimes firebase couldn't load game, it will retry itself again
- */
 export async function updateGame(
   gameName: Game["name"],
   modifyGame: (remoteGame: Game) => Game
 ): Promise<void> {
   try {
-    await firebase
-      .database()
-      .ref(`/game/${gameName}`)
-      .transaction((remoteGame?: Partial<Game>) =>
-        !!remoteGame ? modifyGame(normalizeGame(remoteGame)) : remoteGame
-      );
+    await unhandledUpdateGame(gameName, modifyGame);
   } catch (err) {
     Sentry.captureException(err);
   }
+}
+
+/**
+ * sometimes firebase couldn't load game, it will retry itself again
+ */
+async function unhandledUpdateGame(
+  gameName: Game["name"],
+  modifyGame: (remoteGame: Game) => Game
+): Promise<void> {
+  await firebase
+    .database()
+    .ref(`/game/${gameName}`)
+    .transaction((remoteGame?: Partial<Game>) =>
+      !!remoteGame ? modifyGame(normalizeGame(remoteGame)) : remoteGame
+    );
 }
 
 export async function loadGame(gameName: Game["name"]): Promise<Game | null> {
@@ -68,17 +75,21 @@ export async function watchGame(
   }
 }
 
-export function updatePlayer(
-  player: Player,
-  gameName: Game["name"]
-): Promise<void> {
-  return Promise.resolve(
-    sessionStorage.setItem(`player-${gameName}`, JSON.stringify(player))
-  );
+export async function addGamePlayer(player: Player, game: Game): Promise<void> {
+  return unhandledUpdateGame(game.name, (remoteGame) => {
+    const newGame = addPlayer(remoteGame, player);
+    sessionStorage.setItem(
+      `player-${newGame.name}`,
+      newGame.players.findIndex((existingPlayer) => arePlayersSame(existingPlayer, player)).toString()
+    );
+    return newGame;
+  });
 }
 
-export function loadPlayer(gameName: Game["name"]): Promise<Player | null> {
-  return Promise.resolve(
-    JSON.parse(sessionStorage.getItem(`player-${gameName}`) || null)
-  );
+export function loadPlayer(game: Game): Promise<Player | null> {
+  const playerId = sessionStorage.getItem(`player-${game.name}`);
+  if (playerId === null) {
+    return Promise.resolve(null);
+  }
+  return Promise.resolve(game.players[parseInt(playerId, 10)] || null);
 }
