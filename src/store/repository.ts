@@ -2,7 +2,7 @@ import firebase from "./firebase";
 import { normalizeGame, Game, addPlayer } from "../model/game";
 import * as Sentry from "@sentry/browser";
 import { Player, arePlayersSame } from "../model/player";
-import isEqual from "lodash/isequal";
+import { isEqual } from "lodash";
 
 export async function createNewGame(game: Game): Promise<Game> {
   try {
