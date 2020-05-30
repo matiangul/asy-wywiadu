@@ -4,13 +4,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { component, global } from "../src/components/styles/welcome";
 import { TeamColor } from "../src/model/color";
-import { addPlayer } from "../src/model/game";
 import { Player, Role } from "../src/model/player";
 import {
+  addGamePlayer,
   loadGame,
   loadPlayer,
-  updateGame,
-  updatePlayer,
   watchGame,
 } from "../src/store/repository";
 
@@ -22,6 +20,16 @@ export default () => {
     router.query.name,
   ]);
 
+  const [game, setGame] = useState(undefined);
+  useEffect(() => {
+    if (!gameName) {
+      return;
+    }
+    loadGame(gameName)
+      .then(setGame)
+      .then(() => watchGame(gameName, setGame));
+  }, [gameName]);
+
   const defaultPlayerSettings = {
     nick: "",
     color: "red" as TeamColor,
@@ -29,23 +37,15 @@ export default () => {
   };
   const [player, setPlayer] = useState<Player>(defaultPlayerSettings);
   useEffect(() => {
-    if (gameName) {
-      loadPlayer(gameName).then((storedPlayer) => {
-        if (storedPlayer) {
-          router.push(`/game/${gameName}`);
-        }
-      });
+    if (!game) {
+      return;
     }
-  }, [gameName]);
-
-  const [game, setGame] = useState(undefined);
-  useEffect(() => {
-    if (gameName) {
-      loadGame(gameName)
-        .then(setGame)
-        .then(() => watchGame(gameName, setGame));
-    }
-  }, [gameName]);
+    loadPlayer(game).then((gamePlayer) => {
+      if (gamePlayer) {
+        router.push(`/game/${game.name}`);
+      }
+    });
+  }, [game]);
 
   return (
     <div className="container">
@@ -115,12 +115,12 @@ export default () => {
                     type="submit"
                     onClick={(e) => {
                       e.preventDefault();
-                      updateGame(game.name, (remoteGame) =>
-                        addPlayer(remoteGame, player)
-                      )
-                        .then(() => updatePlayer(player, gameName))
+                      addGamePlayer(player, game)
                         .then(() => router.push(`/game/${gameName}`))
-                        .catch((err) => Sentry.captureException(err));
+                        .catch((err) => {
+                          Sentry.captureException(err);
+                          alert(err.message);
+                        });
                     }}
                   >
                     Dołącz

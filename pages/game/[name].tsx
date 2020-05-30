@@ -26,19 +26,21 @@ export default () => {
 
   const [game, setGame] = useState<Game | null | undefined>(undefined);
   useEffect(() => {
-    if (name) {
-      loadGame(name as string)
-        .then(setGame)
-        .then(() => watchGame(name as string, setGame));
+    if (!name) {
+      return;
     }
+    loadGame(name as string)
+      .then(setGame)
+      .then(() => watchGame(name as string, setGame));
   }, [name]);
 
   const [player, setPlayer] = useState<Player | null | undefined>(undefined);
   useEffect(() => {
-    if (name) {
-      loadPlayer(name as string).then(setPlayer);
+    if (!game) {
+      return;
     }
-  }, [name]);
+    loadPlayer(game).then(setPlayer);
+  }, [game]);
 
   if (game === undefined) {
     return <p>Momencik, już szukam tej gry w internetach...</p>;
@@ -132,7 +134,7 @@ export default () => {
       )}
 
       <p className="text">
-        Jesteś
+        {player.nick} jesteś
         {isGuesser(player) ? " zgadywaczem " : " liderem "}w drużynie
         {player.color === "red" ? " czerwonej." : " niebieskiej."}
       </p>

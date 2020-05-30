@@ -245,7 +245,7 @@ export function startGame(game: Game): Game {
 
 export function addPlayer(game: Game, newPlayer: Player): Game {
   if (game.players.find((player) => arePlayersSame(player, newPlayer))) {
-    throw new Error("Player with that name already joined the game.");
+    throw new Error("Player with that nick already joined the game.");
   }
 
   if (
