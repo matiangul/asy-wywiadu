@@ -15,6 +15,8 @@ import {
 export default () => {
   const router = useRouter();
 
+  const [error, setError] = useState<string>("");
+
   const [gameName, choseGameName] = useState("");
   useEffect(() => choseGameName((router.query.name as string) || ""), [
     router.query.name,
@@ -118,8 +120,8 @@ export default () => {
                       addGamePlayer(player, game)
                         .then(() => router.push(`/game/${gameName}`))
                         .catch((err) => {
+                          setError(err.message);
                           Sentry.captureException(err);
-                          alert(err.message);
                         });
                     }}
                   >
@@ -127,6 +129,8 @@ export default () => {
                   </button>
                 </>
               )}
+
+              {error && <p>Coś poszło nie tak :( Spróbuj jeszcze raz. Może ktoś inny zają już to miejsce.</p>}
             </>
           )}
           {game === undefined && (

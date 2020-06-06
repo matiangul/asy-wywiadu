@@ -48,10 +48,7 @@ async function unhandledUpdateGame(
   if (isEqual(expected, actual)) {
     return actual;
   }
-  Sentry.captureException(
-    new Error(`Game update failed. Expected ${expected}. Actual ${actual}.`)
-  );
-  throw new Error(`Game update failed. Please try again.`);
+  throw new Error(`Game update failed. Expected ${JSON.stringify(expected)}. Actual ${JSON.stringify(actual)}.`);
 }
 
 export async function loadGame(gameName: Game["name"]): Promise<Game | null> {
