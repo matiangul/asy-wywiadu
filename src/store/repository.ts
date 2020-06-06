@@ -25,6 +25,16 @@ export async function updateGame(
   }
 }
 
+export class GameUpdateError extends Error {
+  public constructor(expected: Game, actual: Game) {
+    super(
+      `Game update failed. Expected ${JSON.stringify(
+        expected
+      )}. Actual ${JSON.stringify(actual)}.`
+    );
+  }
+}
+
 /**
  * sometimes firebase couldn't load game, it will retry itself again
  */
@@ -48,7 +58,7 @@ async function unhandledUpdateGame(
   if (isEqual(expected, actual)) {
     return actual;
   }
-  throw new Error(`Game update failed. Expected ${JSON.stringify(expected)}. Actual ${JSON.stringify(actual)}.`);
+  throw new GameUpdateError(expected, actual);
 }
 
 export async function loadGame(gameName: Game["name"]): Promise<Game | null> {
