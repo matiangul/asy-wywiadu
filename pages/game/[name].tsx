@@ -1,7 +1,7 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import Board from "../../src/components/board";
-import { oppositeTeamColor } from "../../src/model/color";
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import Board from '../../src/components/board'
+import { oppositeTeamColor } from '../../src/model/color'
 import {
   allTeamCards,
   Game,
@@ -10,54 +10,49 @@ import {
   isPlayersRound,
   selectedTeamCards,
   setRoundsPassword,
-  voteForRoundEnd
-} from "../../src/model/game";
-import { isGuesser, isLeader, Player } from "../../src/model/player";
-import {
-  loadGame,
-  loadPlayer,
-
-  updateGame, watchGame
-} from "../../src/store/repository";
+  voteForRoundEnd,
+} from '../../src/model/game'
+import { isGuesser, isLeader, Player } from '../../src/model/player'
+import { loadGame, loadPlayer, updateGame, watchGame } from '../../src/store/repository'
 
 export default () => {
-  const router = useRouter();
-  const { name } = router.query;
+  const router = useRouter()
+  const { name } = router.query
 
-  const [game, setGame] = useState<Game | null | undefined>(undefined);
+  const [game, setGame] = useState<Game | null | undefined>(undefined)
   useEffect(() => {
     if (!name) {
-      return;
+      return
     }
     loadGame(name as string)
       .then(setGame)
-      .then(() => watchGame(name as string, setGame));
-  }, [name]);
+      .then(() => watchGame(name as string, setGame))
+  }, [name])
 
-  const [player, setPlayer] = useState<Player | null | undefined>(undefined);
+  const [player, setPlayer] = useState<Player | null | undefined>(undefined)
   useEffect(() => {
     if (!game) {
-      return;
+      return
     }
-    loadPlayer(game).then(setPlayer);
-  }, [game]);
+    loadPlayer(game).then(setPlayer)
+  }, [game])
 
-  const [password, setPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>('')
 
   if (game === undefined) {
-    return <p>Momencik, już szukam tej gry w internetach...</p>;
+    return <p>Momencik, już szukam tej gry w internetach...</p>
   }
 
   if (player === undefined) {
-    return <p>Już już, daj mi tylko sprawdzić ktoś ty jest...</p>;
+    return <p>Już już, daj mi tylko sprawdzić ktoś ty jest...</p>
   }
 
   if (game === null) {
-    return <p>Nic nie wiem o tej grze :(</p>;
+    return <p>Nic nie wiem o tej grze :(</p>
   }
 
   if (player === null || !isPlayerInTheGame(game, player)) {
-    return <p>Ktoś ty?</p>;
+    return <p>Ktoś ty?</p>
   }
 
   if (isBombCardSelected(game)) {
@@ -71,19 +66,16 @@ export default () => {
         <p>Przegraliście :(</p>
         <p>Niestety twoja drużyna zaznaczyła czarną kartę.</p>
       </>
-    );
+    )
   }
 
-  if (
-    selectedTeamCards(game, player.color).length ===
-    allTeamCards(game, player.color).length
-  ) {
+  if (selectedTeamCards(game, player.color).length === allTeamCards(game, player.color).length) {
     return (
       <>
         <p>Jesteś zwycięzcą!</p>
         <p>Twoja drużyna ma już wszystkie wasze hasła.</p>
       </>
-    );
+    )
   }
 
   if (
@@ -93,16 +85,21 @@ export default () => {
     return (
       <>
         <p>Przegraliście :(</p>
-        <p>
-          Niestety przeciwna drużyna ma już wszystkie swoje hasła.
-        </p>
+        <p>Niestety przeciwna drużyna ma już wszystkie swoje hasła.</p>
       </>
-    );
+    )
   }
 
   return (
-    <div className="flex-1 p-16">
-      <Board player={player} game={game} />
+    <>
+      <div className="flex gap-2 p-16">
+        <Board player={player} game={game} />
+        <div className="w-1/4 bg-gray-100 truncate rounded-sm shadow-sm text-gray-600">
+          fasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas
+          <br />
+          kl;fjaksdlf;ajkl;jkjfksdfisdfuisodfsjdklf
+        </div>
+      </div>
       {isLeader(player) && isPlayersRound(game, player) && (
         <>
           <p>Wpisz hasło dla swojej drużyny:</p>
@@ -152,6 +149,6 @@ export default () => {
         {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
         hasło to: "{game.roundsPassword[game.round]}"
       </p>
-    </div>
+    </>
   )
-};
+}
