@@ -94,10 +94,9 @@ export default () => {
     <>
       <div className="flex gap-2 p-16">
         <Board player={player} game={game} />
-        <div className="w-1/4 bg-gray-100 truncate rounded-sm shadow-sm text-gray-600">
-          fasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas
-          <br />
-          kl;fjaksdlf;ajkl;jkjfksdfisdfuisodfsjdklf
+        <div className="w-1/4 bg-gray-100 rounded-sm shadow-sm text-gray-600 p-2">
+          <p className="truncate">fasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas</p>
+          <p className="truncate">kl;fjaksdlf;ajkl;jkjfksdfisdfuisodfsjdklf</p>
         </div>
       </div>
       {isLeader(player) && isPlayersRound(game, player) && (
