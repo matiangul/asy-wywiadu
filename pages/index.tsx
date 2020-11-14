@@ -1,46 +1,34 @@
-import Head from 'next/head'
-import Link from 'next/link'
+import Link from 'next/link';
+import ControlHeader from '../src/components/control.header';
+import ControlContent from '../src/components/control.content';
+import ControlFooter from '../src/components/control.footer';
+import ControlMain from '../src/components/control.main';
 
 export default () => {
   return (
     <>
-      <Head>
-        <title>Asy wywiadu</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <ControlHeader title="Asy wywiadu" />
+      <ControlContent>
+        <ControlMain
+          title="Witam w grze Asy Wywiadu"
+          subtitle="Możesz tutaj stworzyć nową grę lub dołączyć do istniejącej"
+        >
+          <div className="grid grid-cols-2 grid-rows-1 gap-4 grid-flow-row-dense text-xl">
+            <Link href="/create">
+              <button className="bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded">
+                Rozpocznij nową grę
+              </button>
+            </Link>
 
-      <div className="flex justify-center items-center min-h-screen bg-yellow-300 flex-col">
-        <main>
-          <h1 className="text-center text-5xl leading-tight">Witam w grze Asy Wywiadu</h1>
-          <p className="text-center text-2xl mt-6">
-            Możesz tutaj stworzyć nową grę lub dołączyć do istniejącej
-          </p>
-
-          <div className="flex-1 max-w-5xl p-16">
-            <div className="grid grid-cols-2 grid-rows-1 gap-4 grid-flow-row-dense">
-              <Link href="/create">
-                <div className="p-4 pr-6 bg-white border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                  <h3>Rozpocznij nową grę</h3>
-                  <p>Tutaj możesz stworzyć nową rozgrywkę dla swoich znajomych</p>
-                </div>
-              </Link>
-
-              <Link href="/join">
-                <div className="p-4 pr-6 bg-white border-1-8 border-transparent rounded-md shadow-md space-y-2">
-                  <h3>Dołącz do gry</h3>
-                  <p>Tutaj możesz dołączyć do już istniejącej rozgrywki</p>
-                </div>
-              </Link>
-            </div>
+            <Link href="/join">
+              <button className="bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded">
+                Dołącz do gry
+              </button>
+            </Link>
           </div>
-        </main>
-
-        <footer>
-          <a href="https://angulski.pl" target="_blank" rel="noopener noreferrer">
-            Autor Mateusz Angulski
-          </a>
-        </footer>
-      </div>
+        </ControlMain>
+        <ControlFooter />
+      </ControlContent>
     </>
-  )
-}
+  );
+};

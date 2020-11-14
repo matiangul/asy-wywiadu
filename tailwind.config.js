@@ -2,14 +2,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        unseen: '#4d8b37ff',
-        red: '#bf211eff',
-        blue: '#2274a5ff',
-        miss: '#ffc800ff',
-        bomb: '#0a100dff',
-      }
+        unseen: '#4d8b37',
+        red: '#bf211e',
+        blue: '#2274a5',
+        miss: '#ffc800',
+        bomb: '#0a100d',
+        beige: '#fff8f0',
+      },
     },
   },
   variants: {},
-  plugins: [],
-}
+  plugins: [require('@tailwindcss/custom-forms')],
+};
