@@ -249,14 +249,20 @@ export function startGame(game: Game): Game {
 
 export function addPlayer(game: Game, newPlayer: Player): Game {
   if (game.players.find((player) => arePlayersSame(player, newPlayer))) {
-    throw new Error("Player with that nick already joined the game.");
+    throw new Error(
+      "Gracz z takim imieniem już dołączył do tej gry. Wybierz proszę dla siebie inne."
+    );
   }
 
   if (
     isLeader(newPlayer) &&
     fellowLeaders(game.players, newPlayer).length > 0
   ) {
-    throw new Error("There is already leader in this team.");
+    throw new Error(
+      `Drużyna ${
+        newPlayer.color === "red" ? " czerwona " : " niebieska "
+      } ma już lidera. Wybierz dla siebie inną rolę w tej grze.`
+    );
   }
 
   const changedGame = cloneGame(game);

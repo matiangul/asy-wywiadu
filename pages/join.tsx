@@ -10,10 +10,13 @@ import {
   loadGame,
   loadPlayer,
   watchGame,
+  GameUpdateError,
 } from "../src/store/repository";
 
 export default () => {
   const router = useRouter();
+
+  const [error, setError] = useState<Error>();
 
   const [gameName, choseGameName] = useState("");
   useEffect(() => choseGameName((router.query.name as string) || ""), [
@@ -118,8 +121,10 @@ export default () => {
                       addGamePlayer(player, game)
                         .then(() => router.push(`/game/${gameName}`))
                         .catch((err) => {
-                          Sentry.captureException(err);
-                          alert(err.message);
+                          setError(err);
+                          if (err as any instanceof GameUpdateError) {
+                            Sentry.captureException(err);
+                          }
                         });
                     }}
                   >
@@ -127,6 +132,13 @@ export default () => {
                   </button>
                 </>
               )}
+
+              {error && ((error as any) instanceof GameUpdateError ? (
+                <p>
+                  Coś poszło nie tak :( Spróbuj jeszcze raz. Może ktoś inny zają
+                  już to miejsce.
+                </p>
+              ): <p>{error.message}</p>)}
             </>
           )}
           {game === undefined && (
