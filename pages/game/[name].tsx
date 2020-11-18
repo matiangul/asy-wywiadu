@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Board from "../../src/components/board";
 import { oppositeTeamColor } from "../../src/model/color";
 import {
   allTeamCards,
@@ -9,17 +10,15 @@ import {
   isPlayersRound,
   selectedTeamCards,
   setRoundsPassword,
-  voteForRoundEnd,
-  remainingTeamCardsCount,
+  voteForRoundEnd
 } from "../../src/model/game";
-import { Player, isLeader, isGuesser } from "../../src/model/player";
+import { isGuesser, isLeader, Player } from "../../src/model/player";
 import {
   loadGame,
   loadPlayer,
-  watchGame,
-  updateGame,
+
+  updateGame, watchGame
 } from "../../src/store/repository";
-import Board from "../../src/components/board";
 
 export default () => {
   const router = useRouter();
@@ -64,13 +63,13 @@ export default () => {
   if (isBombCardSelected(game)) {
     return !isPlayersRound(game, player) ? (
       <>
-        <p className="text">Jesteś zwycięzcą!</p>
-        <p className="text">Przeciwna drużyna zaznaczyła czarną kartę.</p>
+        <p>Jesteś zwycięzcą!</p>
+        <p>Przeciwna drużyna zaznaczyła czarną kartę.</p>
       </>
     ) : (
       <>
-        <p className="text">Przegraliście :(</p>
-        <p className="text">Niestety twoja drużyna zaznaczyła czarną kartę.</p>
+        <p>Przegraliście :(</p>
+        <p>Niestety twoja drużyna zaznaczyła czarną kartę.</p>
       </>
     );
   }
@@ -81,8 +80,8 @@ export default () => {
   ) {
     return (
       <>
-        <p className="text">Jesteś zwycięzcą!</p>
-        <p className="text">Twoja drużyna ma już wszystkie wasze hasła.</p>
+        <p>Jesteś zwycięzcą!</p>
+        <p>Twoja drużyna ma już wszystkie wasze hasła.</p>
       </>
     );
   }
@@ -93,8 +92,8 @@ export default () => {
   ) {
     return (
       <>
-        <p className="text">Przegraliście :(</p>
-        <p className="text">
+        <p>Przegraliście :(</p>
+        <p>
           Niestety przeciwna drużyna ma już wszystkie swoje hasła.
         </p>
       </>
@@ -102,9 +101,8 @@ export default () => {
   }
 
   return (
-    <>
+    <div className="flex-1 p-16">
       <Board player={player} game={game} />
-
       {isLeader(player) && isPlayersRound(game, player) && (
         <>
           <p>Wpisz hasło dla swojej drużyny:</p>
@@ -115,155 +113,45 @@ export default () => {
             disabled={game.roundsPassword[game.round].length > 0}
             value={password}
             onChange={(e) => {
-              const password = e.target.value;
-              setPassword(password);
+              const password = e.target.value
+              setPassword(password)
             }}
           />
           <button
             type="button"
             disabled={game.roundsPassword[game.round].length > 0}
             onClick={() =>
-              updateGame(game.name, (remoteGame) =>
-                setRoundsPassword(remoteGame, password)
-              )
+              updateGame(game.name, (remoteGame) => setRoundsPassword(remoteGame, password))
             }
           >
             Zatwierdź hasło
           </button>
         </>
       )}
-
       {isGuesser(player) && isPlayersRound(game, player) && (
         <button
           type="button"
           onClick={() => {
-            updateGame(game.name, (remoteGame) =>
-              voteForRoundEnd(remoteGame, player)
-            );
+            updateGame(game.name, (remoteGame) => voteForRoundEnd(remoteGame, player))
           }}
         >
           Koniec rundy
         </button>
       )}
-
-      <p className="text">
+      <p>
         {player.nick} jesteś
-        {isGuesser(player) ? " zgadywaczem " : " liderem "}w drużynie
-        {player.color === "red" ? " czerwonej." : " niebieskiej."}
+        {isGuesser(player) ? ' zgadywaczem ' : ' liderem '}w drużynie
+        {player.color === 'red' ? ' czerwonej.' : ' niebieskiej.'}
       </p>
-      <p className="text">
+      <p>
         Kolej na
-        {isPlayersRound(game, player) ? " twoją " : " drugą "}
-        drużynę. Zostało {isPlayersRound(game, player) ? " wam " : " im "} do
-        odgadnięcia {remainingTeamCardsCount(game, player.color)} z {allTeamCards(game, player.color).length} kart
+        {isPlayersRound(game, player) ? ' twoją ' : ' drugą '}
+        drużynę
       </p>
-      <p className="text">
-        {isPlayersRound(game, player) ? "Wasze " : "Ich "}
+      <p>
+        {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
         hasło to: "{game.roundsPassword[game.round]}"
       </p>
-
-      <style jsx global>{`
-        * {
-          padding: 0;
-          margin: 0;
-          box-sizing: border-box;
-        }
-
-        body {
-          height: 100vh;
-          display: flex;
-          background: #ffffff;
-        }
-
-        #__next {
-          width: 90vw;
-          height: 70vh;
-          margin: 5vh auto;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-wrap: wrap;
-          perspective: 1000px;
-        }
-
-        .text {
-          width: 100%;
-          margin: 5px;
-          position: relative;
-        }
-
-        .word-card {
-          width: calc(20% - 10px);
-          height: calc(20% - 10px);
-          margin: 5px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          word-break: break-word;
-          position: relative;
-          transition: all 0.5s;
-          transform-style: preserve-3d;
-          transform: scale(1);
-          border-radius: 3px;
-          background: rgba(77, 139, 49, 1);
-        }
-
-        .word-card.red {
-          background: #bf211eff;
-        }
-
-        .word-card.blue {
-          background: #2274a5ff;
-        }
-
-        .word-card.miss {
-          background: #ffc800ff;
-        }
-
-        .word-card.bomb {
-          background: #0a100dff;
-        }
-
-        .word-card:active {
-          transform: scale(0.97);
-          transition: transform 0.2s;
-        }
-
-        .word-card p {
-          text-align: center;
-          color: #ffffffff;
-          margin: 0;
-        }
-
-        .word-card p.selected {
-          text-decoration: line-through;
-        }
-
-        .word-card p.voted-word {
-          display: none;
-        }
-
-        .word-card p.voted-info {
-          font-size: 0.85em;
-        }
-
-        .word-card.miss p {
-          color: #000000ff;
-        }
-
-        @media screen and (max-width: 750px) and (max-height: 500px) {
-          .word-card {
-            width: calc(20% - 8px);
-            height: calc(27% - 8px);
-            margin: 3px;
-          }
-
-          .word-card p.voted {
-            font-size: 0.65em;
-          }
-        }
-      `}</style>
-    </>
-  );
+    </div>
+  )
 };
