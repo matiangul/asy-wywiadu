@@ -10,6 +10,7 @@ import {
   selectedTeamCards,
   setRoundsPassword,
   voteForRoundEnd,
+  remainingTeamCardsCount,
 } from "../../src/model/game";
 import { Player, isLeader, isGuesser } from "../../src/model/player";
 import {
@@ -153,7 +154,8 @@ export default () => {
       <p className="text">
         Kolej na
         {isPlayersRound(game, player) ? " twoją " : " drugą "}
-        drużynę
+        drużynę. Zostało {isPlayersRound(game, player) ? " wam " : " im "} do
+        odgadnięcia {remainingTeamCardsCount(game, player.color)} z {allTeamCards(game, player.color).length} kart
       </p>
       <p className="text">
         {isPlayersRound(game, player) ? "Wasze " : "Ich "}
