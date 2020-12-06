@@ -1,6 +1,6 @@
 import { TeamColor } from '../model/color';
 
-export default ({ color }: { color: TeamColor | "white" }) => (
+const GuesserIcon = ({ color }: { color: TeamColor | 'white' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"
@@ -16,3 +16,5 @@ export default ({ color }: { color: TeamColor | "white" }) => (
     />
   </svg>
 );
+
+export default GuesserIcon;

@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import ControlHeader from '../src/components/control.header';
 import ControlContent from '../src/components/control.content';
 import ControlFooter from '../src/components/control.footer';
+import ControlHeader from '../src/components/control.header';
 import ControlMain from '../src/components/control.main';
 
-export default () => {
+const IndexPage = () => {
   return (
     <>
       <ControlHeader title="Asy wywiadu" />
@@ -32,3 +32,5 @@ export default () => {
     </>
   );
 };
+
+export default IndexPage;

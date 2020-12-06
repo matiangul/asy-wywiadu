@@ -19,7 +19,7 @@ function share(gameName: Game['name']): void {
   }).catch((err) => Sentry.captureException(err));
 }
 
-export default ({ gameName }: Props) => {
+const Share = ({ gameName }: Props) => {
   if (isSharingEnabled()) {
     return <button onClick={() => share(gameName)}>Zaproś znajomych</button>;
   } else {
@@ -75,3 +75,5 @@ export default ({ gameName }: Props) => {
     );
   }
 };
+
+export default Share;

@@ -10,7 +10,7 @@ import { createGame, Game, startGame } from '../src/model/game';
 import { wordsGenerator } from '../src/model/word';
 import { createNewGame, updateGame } from '../src/store/repository';
 
-export default () => {
+const  CreatePage = () => {
   const router = useRouter();
   const [startingColor, changeStartingColor] = useState<TeamColor>('red');
   const emptyGame = { name: null };
@@ -103,3 +103,5 @@ export default () => {
     </>
   );
 };
+
+export default CreatePage;

@@ -1,18 +1,18 @@
 import * as Sentry from '@sentry/browser';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import ControlContent from '../src/components/control.content';
 import ControlFooter from '../src/components/control.footer';
 import ControlHeader from '../src/components/control.header';
 import ControlMain from '../src/components/control.main';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import GuesserIcon from '../src/components/guesser.icon';
+import LeaderIcon from '../src/components/leader.icon';
 import { TeamColor } from '../src/model/color';
 import { Game, hasLeader } from '../src/model/game';
 import { isGuesser, isLeader, Player, Role } from '../src/model/player';
 import { addGamePlayer, loadGame, loadPlayer, watchGame } from '../src/store/repository';
-import LeaderIcon from '../src/components/leader.icon';
-import GuesserIcon from '../src/components/guesser.icon';
 
-export default () => {
+const JoinPage = () => {
   const router = useRouter();
 
   const [gameName, choseGameName] = useState('');
@@ -167,30 +167,32 @@ export default () => {
                       )}
                     </div>
                   </div>
-                  {player.nick && player.color && player.role && (
-                    <button
-                      type="submit"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        addGamePlayer(player, game)
-                          .then(() => router.push(`/game/${gameName}`))
-                          .catch((err) => {
-                            Sentry.captureException(err);
-                            alert(err.message);
-                          });
-                      }}
-                      className={`mt-2 w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
-                    >
-                      <span className="ml-1 align-middle">
-                        Dołącz jako {isLeader(player) ? 'lider' : 'zgadywacz'}{' '}
-                      </span>
-                      {isLeader(player) ? (
-                        <LeaderIcon color="white" />
-                      ) : (
-                        <GuesserIcon color="white" />
-                      )}
-                    </button>
-                  )}
+                  {player.nick &&
+                    player.color &&
+                    (player.role === 'guesser' || !hasLeader(game, player.color)) && (
+                      <button
+                        type="submit"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          addGamePlayer(player, game)
+                            .then(() => router.push(`/game/${gameName}`))
+                            .catch((err) => {
+                              Sentry.captureException(err);
+                              alert(err.message);
+                            });
+                        }}
+                        className={`mt-2 w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
+                      >
+                        <span className="ml-1 align-middle">
+                          Dołącz jako {isLeader(player) ? 'lider' : 'zgadywacz'}{' '}
+                        </span>
+                        {isLeader(player) ? (
+                          <LeaderIcon color="white" />
+                        ) : (
+                          <GuesserIcon color="white" />
+                        )}
+                      </button>
+                    )}
                 </>
               )}
               {game === undefined && <p>Momencik, już szukam tej gry w internetach...</p>}
@@ -213,3 +215,5 @@ export default () => {
     </>
   );
 };
+
+export default JoinPage;

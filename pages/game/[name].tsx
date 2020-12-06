@@ -18,7 +18,7 @@ import {
 import { isGuesser, isLeader, Player } from '../../src/model/player';
 import { loadGame, loadPlayer, updateGame, watchGame } from '../../src/store/repository';
 
-export default () => {
+const GamePage = () => {
   const router = useRouter();
   const { name } = router.query;
 
@@ -184,3 +184,5 @@ export default () => {
     </div>
   );
 };
+
+export default GamePage;

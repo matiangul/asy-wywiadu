@@ -19,7 +19,7 @@ interface Props {
   game: Game
 }
 
-export default ({ player, game }: Props) => (
+const Board = ({ player, game }: Props) => (
   <div className="flex-1 grid grid-cols-5 gap-4 grid-flow-row-dense">
     {game.board.map((card, cardIndex) => {
       const cardClasses = classnames(
@@ -70,3 +70,5 @@ export default ({ player, game }: Props) => (
     })}
   </div>
 )
+
+export default Board;
