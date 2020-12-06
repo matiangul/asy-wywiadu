@@ -77,7 +77,7 @@ const JoinPage = () => {
                       type="text"
                       name="playerNick"
                       className="form-input mt-1 block w-full"
-                      placeholder="złowrogi ogr"
+                      placeholder="np. złowrogi ogr"
                       value={player.nick}
                       onChange={(e) => {
                         const nick = e.target.value;
