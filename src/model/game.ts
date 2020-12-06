@@ -217,6 +217,10 @@ export function isCardSelected(game: Game, cardIndex: CardIndex): boolean {
   return game.selected.indexOf(cardIndex) >= 0;
 }
 
+export function remainingTeamCardsCount(game: Game, teamColor: TeamColor): number {
+  return allTeamCards(game, teamColor).length - selectedTeamCards(game, teamColor).length;
+}
+
 export function roundsColor(game: Game): TeamColor {
   return game.round % 2 === 0 ? game.startingColor : oppositeTeamColor(game.startingColor);
 }

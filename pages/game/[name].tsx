@@ -12,6 +12,7 @@ import {
   isBombCardSelected,
   isPlayerInTheGame,
   isPlayersRound,
+  remainingTeamCardsCount,
   selectedTeamCards,
   setRoundsPassword,
   voteForRoundEnd,
@@ -176,7 +177,8 @@ const GamePage = () => {
       <p>
         Kolej na
         {isPlayersRound(game, player) ? ' twoją ' : ' drugą '}
-        drużynę
+        drużynę. Zostało {isPlayersRound(game, player) ? " wam " : " im "} do
+        odgadnięcia {remainingTeamCardsCount(game, player.color)} z {allTeamCards(game, player.color).length} kart
       </p>
       <p>
         {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
