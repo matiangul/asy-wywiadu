@@ -279,6 +279,10 @@ export function isMyVoteForCardInRound(game: Game, player: Player, cardIndex: Ca
   return !!getCardVotesPerRound(game, cardIndex).find((vote) => vote === getPlayersVote(player));
 }
 
+export function hasLeader(game: Game, color: TeamColor): boolean {
+  return game.players.findIndex(p => isLeader(p) && p.color === color) !== -1;
+}
+
 function addCardVoteForRound(game: Game, vote: Vote, cardIndex: CardIndex): void {
   game.board[cardIndex].votesPerRound[game.round].push(vote);
 }

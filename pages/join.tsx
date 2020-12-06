@@ -1,139 +1,215 @@
-import * as Sentry from '@sentry/browser'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { TeamColor } from '../src/model/color'
-import { Player, Role } from '../src/model/player'
-import { addGamePlayer, loadGame, loadPlayer, watchGame } from '../src/store/repository'
+import * as Sentry from '@sentry/browser';
+import ControlContent from '../src/components/control.content';
+import ControlFooter from '../src/components/control.footer';
+import ControlHeader from '../src/components/control.header';
+import ControlMain from '../src/components/control.main';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { TeamColor } from '../src/model/color';
+import { Game, hasLeader } from '../src/model/game';
+import { isGuesser, isLeader, Player, Role } from '../src/model/player';
+import { addGamePlayer, loadGame, loadPlayer, watchGame } from '../src/store/repository';
+import LeaderIcon from '../src/components/leader.icon';
+import GuesserIcon from '../src/components/guesser.icon';
 
 export default () => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [gameName, choseGameName] = useState('')
-  useEffect(() => choseGameName((router.query.name as string) || ''), [router.query.name])
+  const [gameName, choseGameName] = useState('');
+  useEffect(() => choseGameName((router.query.name as string) || ''), [router.query.name]);
 
-  const [game, setGame] = useState(undefined)
+  const [game, setGame] = useState<Game>(undefined);
   useEffect(() => {
     if (!gameName) {
-      return
+      return;
     }
     loadGame(gameName)
       .then(setGame)
-      .then(() => watchGame(gameName, setGame))
+      .then(() => watchGame(gameName, setGame));
     // undefined when not found
-  }, [gameName])
+  }, [gameName]);
 
   const defaultPlayerSettings = {
     nick: '',
     color: 'red' as TeamColor,
     role: 'guesser' as Role,
-  }
-  const [player, setPlayer] = useState<Player>(defaultPlayerSettings)
+  };
+  const [player, setPlayer] = useState<Player>(defaultPlayerSettings);
   useEffect(() => {
     if (!game) {
-      return
+      return;
     }
     loadPlayer(game).then((gamePlayer) => {
       if (gamePlayer) {
-        router.push(`/game/${game.name}`)
+        router.push(`/game/${game.name}`);
       }
-    })
-  }, [game])
+    });
+  }, [game]);
 
   return (
-    <div>
-      <Head>
-        <title>Asy wywiadu - dołącz do gry</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <ControlHeader title="Asy wywiadu - dołącz do gry" />
 
-      <div className="flex justify-center items-center min-h-screen bg-yellow-300 flex-col">
-        <main>
-          <h1 className="text-center text-5xl leading-tight">Hej Asie</h1>
-          <p className="text-center text-2xl mt-6">Tutaj możesz dołączyć do istniejącej gry</p>
-          <form>
-            <input
-              type="text"
-              name="gameName"
-              placeholder="Nazwa rozgrywki"
-              value={gameName}
-              onChange={(e) => {
-                const name = e.target.value
-                choseGameName(name)
-              }}
-            />
-            {game && (
-              <>
-                <p>Jak się zwiesz?</p>
+      <ControlContent>
+        <ControlMain title="Hej Asie" subtitle="Tutaj możesz dołączyć do istniejącej gry">
+          <div className="grid grid-cols-3 grid-rows-1 gap-4 grid-flow-row-dense">
+            <form className="col-span-2">
+              <label className="block">
+                <span className="text-gray-700">Nazwa rozgrywki</span>
                 <input
                   type="text"
-                  name="playerNick"
-                  placeholder="nick"
-                  value={player.nick}
+                  name="gameName"
+                  className="form-input mt-1 block w-full"
+                  placeholder="abc-def-123-456"
+                  disabled={!!router.query.name}
+                  value={gameName}
                   onChange={(e) => {
-                    const nick = e.target.value
-                    setPlayer((player) => ({ ...player, nick }))
+                    const name = e.target.value;
+                    choseGameName(name);
                   }}
                 />
-                <p>Wybierz drużynę</p>
-                <select
-                  name="playerColor"
-                  value={player.color}
-                  onChange={(e) => {
-                    const color = e.target.value
-                    setPlayer((player) => ({
-                      ...player,
-                      color: color as TeamColor,
-                    }))
-                  }}
-                >
-                  <option value="red">Czerwoni</option>
-                  <option value="blue">Niebiescy</option>
-                </select>
-                <p>Wybierz swoją rolę w drużynie</p>
-                <select
-                  name="playerRole"
-                  value={player.role}
-                  onChange={(e) => {
-                    const role = e.target.value
-                    setPlayer((player) => ({ ...player, role: role as Role }))
-                  }}
-                >
-                  <option value="leader">Lider</option>
-                  <option value="guesser">Zgadywacz</option>
-                </select>
-
-                {player.nick && player.color && player.role && (
-                  <>
+              </label>
+              {game && (
+                <>
+                  <label className="block mt-2">
+                    <span className="text-gray-700">Jak się zwiesz?</span>
+                    <input
+                      type="text"
+                      name="playerNick"
+                      className="form-input mt-1 block w-full"
+                      placeholder="złowrogi ogr"
+                      value={player.nick}
+                      onChange={(e) => {
+                        const nick = e.target.value;
+                        setPlayer((player) => ({ ...player, nick }));
+                      }}
+                    />
+                  </label>
+                  <div className="mt-2">
+                    <span className="tex-2xl">Wybierz drużynę</span>
+                    <div className="mt-2">
+                      <div>
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="playerColor"
+                            className="form-radio text-blue"
+                            value="blue"
+                            checked={player.color === 'blue'}
+                            onChange={(e) => {
+                              const color = e.target.value;
+                              setPlayer((player) => ({
+                                ...player,
+                                color: color as TeamColor,
+                              }));
+                            }}
+                          />
+                          <span className="ml-2">Niebiescy</span>
+                        </label>
+                      </div>
+                      <div>
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="playerColor"
+                            className="form-radio text-red"
+                            value="red"
+                            checked={player.color === 'red'}
+                            onChange={(e) => {
+                              const color = e.target.value;
+                              setPlayer((player) => ({
+                                ...player,
+                                color: color as TeamColor,
+                              }));
+                            }}
+                          />
+                          <span className="ml-2">Czerwoni</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <span className="tex-2xl">Wybierz swoją rolę w drużynie</span>
+                    <div className="mt-2">
+                      <div>
+                        <label className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="playerRole"
+                            className="form-radio text-pink-500"
+                            value="guesser"
+                            checked={player.role === 'guesser'}
+                            onChange={(e) => {
+                              const role = e.target.value;
+                              setPlayer((player) => ({ ...player, role: role as Role }));
+                            }}
+                          />
+                          <span className="ml-2">Zgadywacz</span>
+                        </label>
+                      </div>
+                      {!hasLeader(game, player.color) && (
+                        <div>
+                          <label className="inline-flex items-center">
+                            <input
+                              type="radio"
+                              name="playerRole"
+                              className="form-radio text-pink-500"
+                              value="leader"
+                              checked={player.role === 'leader'}
+                              onChange={(e) => {
+                                const role = e.target.value;
+                                setPlayer((player) => ({ ...player, role: role as Role }));
+                              }}
+                            />
+                            <span className="ml-2">Lider</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {player.nick && player.color && player.role && (
                     <button
                       type="submit"
                       onClick={(e) => {
-                        e.preventDefault()
+                        e.preventDefault();
                         addGamePlayer(player, game)
                           .then(() => router.push(`/game/${gameName}`))
                           .catch((err) => {
-                            Sentry.captureException(err)
-                            alert(err.message)
-                          })
+                            Sentry.captureException(err);
+                            alert(err.message);
+                          });
                       }}
+                      className={`mt-2 w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
                     >
-                      Dołącz
+                      <span className="ml-1 align-middle">
+                        Dołącz jako {isLeader(player) ? 'lider' : 'zgadywacz'}{' '}
+                      </span>
+                      {isLeader(player) ? (
+                        <LeaderIcon color="white" />
+                      ) : (
+                        <GuesserIcon color="white" />
+                      )}
                     </button>
-                  </>
-                )}
-              </>
-            )}
-            {game === undefined && <p>Momencik, już szukam tej gry w internetach...</p>}
-            {game === null && <p>Nie ma takiej gry, sory :(</p>}
-          </form>
-        </main>
-
-        <footer>
-          <a href="https://angulski.pl" target="_blank" rel="noopener noreferrer">
-            Autor Mateusz Angulski
-          </a>
-        </footer>
-      </div>
-    </div>
-  )
-}
+                  )}
+                </>
+              )}
+              {game === undefined && <p>Momencik, już szukam tej gry w internetach...</p>}
+              {game === null && <p>Nie ma takiej gry, sory :(</p>}
+            </form>
+            <div className="text-gray-700 p-2">
+              {game &&
+                game.players.map((p) => (
+                  <p className="truncate" key={p.nick}>
+                    {isGuesser(p) && <GuesserIcon color={p.color} />}
+                    {isLeader(p) && <LeaderIcon color={p.color} />}
+                    <span className="ml-1 align-middle">{p.nick}</span>
+                  </p>
+                ))}
+            </div>
+          </div>
+        </ControlMain>
+        <ControlFooter />
+      </ControlContent>
+    </>
+  );
+};

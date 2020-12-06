@@ -1,72 +1,105 @@
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
-import Share from '../src/components/share'
-import { TeamColor } from '../src/model/color'
-import { createGame, Game, startGame } from '../src/model/game'
-import { wordsGenerator } from '../src/model/word'
-import { createNewGame, updateGame } from '../src/store/repository'
+import { useRouter } from 'next/router';
+import { ChangeEvent, useEffect, useState } from 'react';
+import ControlContent from '../src/components/control.content';
+import ControlFooter from '../src/components/control.footer';
+import ControlHeader from '../src/components/control.header';
+import ControlMain from '../src/components/control.main';
+import Share from '../src/components/share';
+import { TeamColor } from '../src/model/color';
+import { createGame, Game, startGame } from '../src/model/game';
+import { wordsGenerator } from '../src/model/word';
+import { createNewGame, updateGame } from '../src/store/repository';
 
 export default () => {
-  const router = useRouter()
-  const [startingColor, changeStartingColor] = useState<TeamColor>('red')
-  const [game, setGame] = useState<Partial<Game>>({ name: null })
+  const router = useRouter();
+  const [startingColor, changeStartingColor] = useState<TeamColor>('red');
+  const emptyGame = { name: null };
+  const [game, setGame] = useState<Partial<Game>>(emptyGame);
+  const changeWhoStarts = (e: ChangeEvent<HTMLInputElement>) => {
+    changeStartingColor(e.target.value as TeamColor);
+  };
+  const isCreated = !!game.name;
+  const start = () => {
+    updateGame(game.name, (remoteGame) => startGame(remoteGame)).then(() =>
+      router.push(`/join?name=${game.name}`)
+    );
+  };
+
+  useEffect(() => {
+    setGame(emptyGame);
+    createNewGame(createGame(wordsGenerator(25), startingColor)).then(setGame);
+  }, [startingColor]);
 
   return (
-    <div>
-      <Head>
-        <title>Asy wywiadu - stwórz nową grę</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <ControlHeader title="Asy wywiadu - stwórz nową grę" />
 
-      <div className="flex justify-center items-center min-h-screen bg-yellow-300 flex-col">
-        <main>
-          <h1 className="text-center text-5xl leading-tight">Hej Asie</h1>
-          <p className="text-center text-2xl mt-6">Jesteś w trybie tworzenia nowej rozgrywki</p>
-
-          <h5>Kto zaczyna?</h5>
-          <select
-            value={startingColor}
-            onChange={(e) => changeStartingColor(e.target.value as TeamColor)}
-            disabled={!!game.name}
-          >
-            <option value="red">Czerwoni</option>
-            <option value="blue">Niebiescy</option>
-          </select>
-
-          {!game.name && (
-            <button
-              onClick={() =>
-                createNewGame(createGame(wordsGenerator(25), startingColor)).then(setGame)
-              }
-            >
-              Stwórz grę
-            </button>
-          )}
-
-          {game.name && (
-            <>
-              <Share gameName={game.name} />
-              <p>A następnie:</p>
-              <button
-                onClick={() => {
-                  updateGame(game.name, (remoteGame) => startGame(remoteGame)).then(() =>
-                    router.push(`/join?name=${game.name}`)
-                  )
-                }}
-              >
-                Rozpocznij grę
-              </button>
-            </>
-          )}
-        </main>
-
-        <footer>
-          <a href="https://angulski.pl" target="_blank" rel="noopener noreferrer">
-            Autor Mateusz Angulski
-          </a>
-        </footer>
-      </div>
-    </div>
-  )
-}
+      <ControlContent>
+        <ControlMain title="Hej Asie" subtitle="Jesteś w trybie tworzenia nowej rozgrywki">
+          <div className="grid grid-cols-3 grid-rows-1 gap-8 grid-flow-row-dense">
+            <div className="text-right">
+              <span className="tex-2xl">Kto zaczyna?</span>
+              <div className="mt-2">
+                <div>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio text-blue"
+                      value="blue"
+                      checked={startingColor === 'blue'}
+                      onChange={changeWhoStarts}
+                    />
+                    <span className="ml-2">Niebiescy</span>
+                  </label>
+                </div>
+                <div>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio text-red"
+                      value="red"
+                      checked={startingColor === 'red'}
+                      onChange={changeWhoStarts}
+                    />
+                    <span className="ml-2">Czerwoni</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col col-span-2">
+              {isCreated && (
+                <>
+                  <Share gameName={game.name} />
+                  <p className="mt-2">A następnie:</p>
+                  <button
+                    onClick={start}
+                    className={`mt-2 bg-${startingColor} text-white py-2 px-4 border-b-4 border-${startingColor} hover:bg-opacity-75 rounded`}
+                  >
+                    Rozpocznij grę
+                  </button>
+                </>
+              )}
+              {!isCreated && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-8"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                  />
+                </svg>
+              )}
+            </div>
+          </div>
+        </ControlMain>
+        <ControlFooter />
+      </ControlContent>
+    </>
+  );
+};
