@@ -8,6 +8,7 @@ import { oppositeTeamColor } from '../../src/model/color';
 import {
   allTeamCards,
   Game,
+  groupedPlayers,
   isBombCardSelected,
   isPlayerInTheGame,
   isPlayersRound,
@@ -99,7 +100,7 @@ const GamePage = () => {
       <div className="flex gap-2 p-16">
         <Board player={player} game={game} />
         <div className="hidden lg:block w-1/4 bg-gray-100 rounded-sm shadow-sm text-gray-600 p-2">
-          {game.players.map((player) => (
+          {groupedPlayers(game).map((player) => (
             <p className="truncate">
               {isGuesser(player) && <GuesserIcon color={player.color} />}
               {isLeader(player) && <LeaderIcon color={player.color} />}
@@ -122,7 +123,7 @@ const GamePage = () => {
         )}
         {isTooltipOpen && (
           <div className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-600 text-white p-2">
-            {game.players.map((player) => (
+            {groupedPlayers(game).map((player) => (
               <p className="truncate">
                 {isGuesser(player) && <GuesserIcon color={player.color} />}
                 {isLeader(player) && <LeaderIcon color={player.color} />}

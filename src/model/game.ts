@@ -280,7 +280,11 @@ export function isMyVoteForCardInRound(game: Game, player: Player, cardIndex: Ca
 }
 
 export function hasLeader(game: Game, color: TeamColor): boolean {
-  return game.players.findIndex(p => isLeader(p) && p.color === color) !== -1;
+  return game.players.findIndex((p) => isLeader(p) && p.color === color) !== -1;
+}
+
+export function groupedPlayers(game: Game): Game['players'] {
+  return game.players.sort((p1, p2) => p1.color < p2.color ? -1 : 1);
 }
 
 function addCardVoteForRound(game: Game, vote: Vote, cardIndex: CardIndex): void {

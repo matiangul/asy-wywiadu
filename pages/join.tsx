@@ -8,7 +8,7 @@ import ControlMain from '../src/components/control.main';
 import GuesserIcon from '../src/components/guesser.icon';
 import LeaderIcon from '../src/components/leader.icon';
 import { TeamColor } from '../src/model/color';
-import { Game, hasLeader } from '../src/model/game';
+import { Game, groupedPlayers, hasLeader } from '../src/model/game';
 import { isGuesser, isLeader, Player, Role } from '../src/model/player';
 import { addGamePlayer, loadGame, loadPlayer, watchGame } from '../src/store/repository';
 
@@ -200,7 +200,7 @@ const JoinPage = () => {
             </form>
             <div className="text-gray-700 p-2">
               {game &&
-                game.players.map((p) => (
+                groupedPlayers(game).map((p) => (
                   <p className="truncate" key={p.nick}>
                     {isGuesser(p) && <GuesserIcon color={p.color} />}
                     {isLeader(p) && <LeaderIcon color={p.color} />}
