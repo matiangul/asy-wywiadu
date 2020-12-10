@@ -207,7 +207,7 @@ const GamePage = () => {
         ></button>
       )}
       {isTooltipOpen && (
-        <div className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-600 text-white p-2">
+        <div className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-100 text-gray-600 p-4">
           <div className="flex items-baseline space-x-2">
           <button
             onClick={() => setActiveTab('players')}
@@ -296,7 +296,6 @@ const GamePage = () => {
         )}
         </div>
       )}
-      <ControlFooter />
     </div>
   );
 };
