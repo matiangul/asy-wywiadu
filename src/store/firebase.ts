@@ -14,7 +14,7 @@ if (firebase.apps.length > 0) {
   app = firebase.initializeApp({
     apiKey: "AIzaSyB8hMpCCmpLt9EIuOTG0f1oRYXV28B7QqU",
     authDomain: "asy-wywiadu.firebaseapp.com",
-    databaseURL: "https://asy-wywiadu.firebaseio.com",
+    databaseURL: "https://asy-wywiadu-europe.europe-west1.firebasedatabase.app",
     projectId: "asy-wywiadu",
     storageBucket: "asy-wywiadu.appspot.com",
     messagingSenderId: "906845334929",
