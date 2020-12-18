@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Board from '../../src/components/board';
 import Chat from '../../src/components/chat';
 import ControlHeader from '../../src/components/control.header';
-import FabIcon from '../../src/components/fab.icon';
+import FabChatIcon from '../../src/components/fab.chat.icon';
+import FabPanelIcon from '../../src/components/fab.panel.icon';
 import Panel from '../../src/components/panel';
 import { oppositeTeamColor } from '../../src/model/color';
 import {
@@ -116,18 +117,18 @@ const GamePage = () => {
           setPanelVisibility(!isPanelOpen);
           setChatVisibility(false);
         }}
-        className="fixed right-0 bottom-0 mr-2 mb-2 z-10 lg:hidden w-12 h-12 bg-blue rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
+        className="fixed right-0 bottom-0 mr-2 mb-2 z-10 lg:hidden w-12 h-12 bg-gray-600 rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
       >
-        <FabIcon />
+        <FabPanelIcon />
       </button>
       <button
         onClick={() => {
           setChatVisibility(!isChatOpen);
           setPanelVisibility(false);
         }}
-        className="fixed right-0 bottom-0 mr-2 mb-16 z-10 lg:hidden w-12 h-12 bg-red rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
+        className="fixed right-0 bottom-0 mr-2 mb-16 z-10 lg:hidden w-12 h-12 bg-gray-600 rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
       >
-        <FabIcon />
+        <FabChatIcon />
       </button>
       {(isPanelOpen || isChatOpen) && (
         <button

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { oppositeTeamColor } from '../model/color';
 import {
   allTeamCards,
   Game,
   groupedPlayers,
   isPlayersRound,
   remainingTeamCardsCount,
+  roundsColor,
   setRoundsPassword,
   voteForRoundEnd,
 } from '../model/game';
@@ -59,58 +61,88 @@ const Panel = ({ className, game, player }: Props) => {
       )}
 
       {activeTab === 'info' && (
-        <div className="mt-4">
-          {isLeader(player) && isPlayersRound(game, player) && (
-            <>
-              <p>Wpisz hasło dla swojej drużyny:</p>
-              <input
-                type="text"
-                name="password"
-                placeholder={game.roundsPassword[game.round] || 'Narzędzie 3'}
-                disabled={game.roundsPassword[game.round].length > 0}
-                value={password}
-                onChange={(e) => {
-                  const password = e.target.value;
-                  setPassword(password);
-                }}
-              />
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 grid-flow-row-dense">
+          {isLeader(player) &&
+            isPlayersRound(game, player) &&
+            game.roundsPassword[game.round].length === 0 && (
+              <div className="sm:col-span-2 md:col-span-4">
+                <label className="block">
+                  <span className="text-gray-700">Wpisz hasło dla swojej drużyny:</span>
+                  <input
+                    type="text"
+                    name="password"
+                    className="w-full form-input mt-1 block"
+                    placeholder={game.roundsPassword[game.round] || 'Narzędzie 3'}
+                    disabled={game.roundsPassword[game.round].length > 0}
+                    value={password}
+                    onChange={(e) => {
+                      const password = e.target.value;
+                      setPassword(password);
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className={`w-full mt-2 bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
+                  disabled={game.roundsPassword[game.round].length > 0}
+                  onClick={() =>
+                    updateGame(game.name, (remoteGame) => setRoundsPassword(remoteGame, password))
+                  }
+                >
+                  Zatwierdź hasło
+                </button>
+              </div>
+            )}
+
+          <div>
+            <span className="font-bold">{player.nick}</span> jesteś{' '}
+            <span>{isGuesser(player) ? ' zgadywaczem ' : ' liderem '}</span>
+            {isLeader(player) ? (
+              <LeaderIcon color={player.color} />
+            ) : (
+              <GuesserIcon color={player.color} />
+            )}{' '}
+            w drużynie {player.color === 'red' ? ' czerwonej' : ' niebieskiej'}
+          </div>
+
+          <div>
+            <span className="font-bold">
+              {isPlayersRound(game, player) ? 'Wasza ' : 'Ich '} kolej
+            </span>
+            . Zostało {isPlayersRound(game, player) ? ' wam ' : ' im '}{' '}
+            <span className="font-bold">
+              {remainingTeamCardsCount(game, roundsColor(game))}/
+              {allTeamCards(game, roundsColor(game)).length}
+            </span>
+          </div>
+
+          <div>
+            {isPlayersRound(game, player) ? ' Przeciwnej ' : ' Waszej '}
+            {' drużynie zostało '}
+            <span className="font-bold">
+              {remainingTeamCardsCount(game, oppositeTeamColor(roundsColor(game)))}/
+              {allTeamCards(game, oppositeTeamColor(roundsColor(game))).length}
+            </span>
+          </div>
+
+          <div>
+            {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
+            hasło to: <span className="font-bold">"{game.roundsPassword[game.round]}"</span>
+          </div>
+
+          {isGuesser(player) && isPlayersRound(game, player) && (
+            <div className="sm:col-span-2 md:col-span-4">
               <button
                 type="button"
-                disabled={game.roundsPassword[game.round].length > 0}
-                onClick={() =>
-                  updateGame(game.name, (remoteGame) => setRoundsPassword(remoteGame, password))
-                }
+                className={`w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
+                onClick={() => {
+                  updateGame(game.name, (remoteGame) => voteForRoundEnd(remoteGame, player));
+                }}
               >
-                Zatwierdź hasło
+                Koniec rundy
               </button>
-            </>
+            </div>
           )}
-          {isGuesser(player) && isPlayersRound(game, player) && (
-            <button
-              type="button"
-              onClick={() => {
-                updateGame(game.name, (remoteGame) => voteForRoundEnd(remoteGame, player));
-              }}
-            >
-              Koniec rundy
-            </button>
-          )}
-          <p>
-            {player.nick} jesteś
-            {isGuesser(player) ? ' zgadywaczem ' : ' liderem '}w drużynie
-            {player.color === 'red' ? ' czerwonej.' : ' niebieskiej.'}
-          </p>
-          <p>
-            Kolej na
-            {isPlayersRound(game, player) ? ' twoją ' : ' drugą '}
-            drużynę. Zostało {isPlayersRound(game, player) ? ' wam ' : ' im '} do odgadnięcia{' '}
-            {remainingTeamCardsCount(game, player.color)} z{' '}
-            {allTeamCards(game, player.color).length} kart
-          </p>
-          <p>
-            {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
-            hasło to: "{game.roundsPassword[game.round]}"
-          </p>
         </div>
       )}
     </div>
