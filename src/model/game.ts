@@ -288,7 +288,7 @@ export function hasLeader(game: Game, color: TeamColor): boolean {
 }
 
 export function groupedPlayers(game: Game): Game['players'] {
-  return game.players.sort((p1, p2) => p1.color < p2.color ? -1 : 1);
+  return game.players.sort((p1, p2) => (p1.color < p2.color ? -1 : 1));
 }
 
 function addCardVoteForRound(game: Game, vote: Vote, cardIndex: CardIndex): void {
@@ -305,4 +305,8 @@ function isPlayersCardVoteInRound(game: Game, player: Player, cardIndex: CardInd
   return !!getCardVotesPerRound(game, cardIndex).find((vote) =>
     areVotesSame(vote, getPlayersVote(player))
   );
+}
+
+export function findPlayerByNick(game: Game, nick: string): Player | undefined {
+  return game.players.find((p) => p.nick === nick);
 }

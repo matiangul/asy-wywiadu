@@ -105,7 +105,11 @@ const GamePage = () => {
             game={game}
           />
         </div>
-        <Chat className="hidden lg:flex h-screen pr-8 pt-8 pb-8" />
+        <Chat
+          className="hidden lg:flex h-screen pr-8 pt-8 pb-8"
+          game={game}
+          player={player}
+        />
       </div>
       <button
         onClick={() => {
@@ -143,7 +147,11 @@ const GamePage = () => {
         />
       )}
       {isChatOpen && (
-        <Chat className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-24 mr-12 rounded-md bg-gray-100 text-gray-600 h-4/5" />
+        <Chat
+          className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-24 mr-12 rounded-md bg-gray-100 text-gray-600 h-4/5"
+          game={game}
+          player={player}
+        />
       )}
     </div>
   );
