@@ -1,24 +1,22 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Board from '../../src/components/board';
-import FabIcon from '../../src/components/fab.icon';
-import GuesserIcon from '../../src/components/guesser.icon';
-import LeaderIcon from '../../src/components/leader.icon';
+import Chat from '../../src/components/chat';
+import ControlHeader from '../../src/components/control.header';
+import FabChatIcon from '../../src/components/fab.chat.icon';
+import FabPanelIcon from '../../src/components/fab.panel.icon';
+import Panel from '../../src/components/panel';
 import { oppositeTeamColor } from '../../src/model/color';
 import {
   allTeamCards,
   Game,
-  groupedPlayers,
   isBombCardSelected,
   isPlayerInTheGame,
   isPlayersRound,
-  remainingTeamCardsCount,
   selectedTeamCards,
-  setRoundsPassword,
-  voteForRoundEnd,
 } from '../../src/model/game';
-import { isGuesser, isLeader, Player } from '../../src/model/player';
-import { loadGame, loadPlayer, updateGame, watchGame } from '../../src/store/repository';
+import { Player } from '../../src/model/player';
+import { loadGame, loadPlayer, watchGame } from '../../src/store/repository';
 
 const GamePage = () => {
   const router = useRouter();
@@ -42,8 +40,8 @@ const GamePage = () => {
     loadPlayer(game).then(setPlayer);
   }, [game]);
 
-  const [password, setPassword] = useState<string>('');
-  const [isTooltipOpen, setTooltipVisibility] = useState<boolean>(false);
+  const [isPanelOpen, setPanelVisibility] = useState<boolean>(false);
+  const [isChatOpen, setChatVisibility] = useState<boolean>(false);
 
   if (game === undefined) {
     return <p>Momencik, już szukam tej gry w internetach...</p>;
@@ -97,93 +95,65 @@ const GamePage = () => {
   }
 
   return (
-    <div className="relative">
-      <div className="flex gap-2 p-16">
-        <Board player={player} game={game} />
-        <div className="hidden lg:block w-1/4 bg-gray-100 rounded-sm shadow-sm text-gray-600 p-2">
-          {groupedPlayers(game).map((player) => (
-            <p className="truncate">
-              {isGuesser(player) && <GuesserIcon color={player.color} />}
-              {isLeader(player) && <LeaderIcon color={player.color} />}
-              <span className="ml-1 align-middle">{player.nick}</span>
-            </p>
-          ))}
-        </div>
-        <button
-          onClick={() => setTooltipVisibility(!isTooltipOpen)}
-          className="fixed right-0 bottom-0 mr-2 mb-2 z-10 lg:hidden w-12 h-12 bg-blue rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
-        >
-          <FabIcon />
-        </button>
-        {isTooltipOpen && (
-          <button
-            onClick={() => setTooltipVisibility(false)}
-            tabIndex={-1}
-            className="fixed lg:hidden inset-0 h-full w-full bg-black opacity-50 cursor-default"
-          ></button>
-        )}
-        {isTooltipOpen && (
-          <div className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-600 text-white p-2">
-            {groupedPlayers(game).map((player) => (
-              <p className="truncate">
-                {isGuesser(player) && <GuesserIcon color={player.color} />}
-                {isLeader(player) && <LeaderIcon color={player.color} />}
-                <span className="ml-1 align-middle">{player.nick}</span>
-              </p>
-            ))}
-          </div>
-        )}
-      </div>
-      {isLeader(player) && isPlayersRound(game, player) && (
-        <>
-          <p>Wpisz hasło dla swojej drużyny:</p>
-          <input
-            type="text"
-            name="password"
-            placeholder={game.roundsPassword[game.round] || 'Narzędzie 3'}
-            disabled={game.roundsPassword[game.round].length > 0}
-            value={password}
-            onChange={(e) => {
-              const password = e.target.value;
-              setPassword(password);
-            }}
+    <div className="relative bg-beige font-serif h-screen">
+      <ControlHeader title={game.name} />
+      <div className="lg:grid lg:grid-cols-4 lg:gap-4">
+        <div className="lg:col-span-3 lg:gap-0 pl-8 pt-8 pb-8 lg:pr-0 pr-8">
+          <Board player={player} game={game} />
+          <Panel
+            className="hidden lg:block w-full bg-gray-100 rounded-md shadow-md text-gray-600 p-4 mt-8"
+            player={player}
+            game={game}
           />
-          <button
-            type="button"
-            disabled={game.roundsPassword[game.round].length > 0}
-            onClick={() =>
-              updateGame(game.name, (remoteGame) => setRoundsPassword(remoteGame, password))
-            }
-          >
-            Zatwierdź hasło
-          </button>
-        </>
-      )}
-      {isGuesser(player) && isPlayersRound(game, player) && (
+        </div>
+        <Chat
+          className="hidden lg:flex h-screen pr-8 pt-8 pb-8"
+          game={game}
+          player={player}
+        />
+      </div>
+      <button
+        onClick={() => {
+          setPanelVisibility(!isPanelOpen);
+          setChatVisibility(false);
+        }}
+        className="fixed right-0 bottom-0 mr-2 mb-2 z-10 lg:hidden w-12 h-12 bg-gray-600 rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
+      >
+        <FabPanelIcon />
+      </button>
+      <button
+        onClick={() => {
+          setChatVisibility(!isChatOpen);
+          setPanelVisibility(false);
+        }}
+        className="fixed right-0 bottom-0 mr-2 mb-16 z-10 lg:hidden w-12 h-12 bg-gray-600 rounded-full text-white flex items-center justify-center focus:outline-none focus:shadow-outline"
+      >
+        <FabChatIcon />
+      </button>
+      {(isPanelOpen || isChatOpen) && (
         <button
-          type="button"
           onClick={() => {
-            updateGame(game.name, (remoteGame) => voteForRoundEnd(remoteGame, player));
+            setPanelVisibility(false);
+            setChatVisibility(false);
           }}
-        >
-          Koniec rundy
-        </button>
+          tabIndex={-1}
+          className="fixed lg:hidden inset-0 h-full w-full bg-black opacity-50 cursor-default"
+        ></button>
       )}
-      <p>
-        {player.nick} jesteś
-        {isGuesser(player) ? ' zgadywaczem ' : ' liderem '}w drużynie
-        {player.color === 'red' ? ' czerwonej.' : ' niebieskiej.'}
-      </p>
-      <p>
-        Kolej na
-        {isPlayersRound(game, player) ? ' twoją ' : ' drugą '}
-        drużynę. Zostało {isPlayersRound(game, player) ? " wam " : " im "} do
-        odgadnięcia {remainingTeamCardsCount(game, player.color)} z {allTeamCards(game, player.color).length} kart
-      </p>
-      <p>
-        {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
-        hasło to: "{game.roundsPassword[game.round]}"
-      </p>
+      {isPanelOpen && (
+        <Panel
+          className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-100 text-gray-600 p-4"
+          player={player}
+          game={game}
+        />
+      )}
+      {isChatOpen && (
+        <Chat
+          className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-24 mr-12 rounded-md bg-gray-100 text-gray-600 h-4/5"
+          game={game}
+          player={player}
+        />
+      )}
     </div>
   );
 };
