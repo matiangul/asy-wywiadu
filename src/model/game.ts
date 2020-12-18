@@ -201,6 +201,10 @@ function getCardColor(game: Game, cardIndex: CardIndex): Color {
   return game.board[cardIndex].color;
 }
 
+export function isMissCard(game: Game, cardIndex: CardIndex): boolean {
+  return getCardColor(game, cardIndex) === 'miss';
+}
+
 export function isPlayersRound(game: Game, player: Player): boolean {
   return roundsColor(game) === player.color;
 }

@@ -1,5 +1,5 @@
-import classnames from 'classnames'
-import { CSSProperties } from 'react'
+import classnames from 'classnames';
+import { CSSProperties } from 'react';
 import {
   areVotesVisible,
   areWordsVisible,
@@ -7,16 +7,17 @@ import {
   getCardVotesPerRound,
   isCardsColorVisible,
   isCardSelected,
+  isMissCard,
   isMyVoteForCardInRound,
   toggleCard,
-} from '../model/game'
-import { Player } from '../model/player'
-import { updateGame } from '../store/repository'
-import { getUniqueSelectedCardStyle } from './styles/selectedCardStyler'
+} from '../model/game';
+import { Player } from '../model/player';
+import { updateGame } from '../store/repository';
+import { getUniqueSelectedCardStyle } from './styles/selectedCardStyler';
 
 interface Props {
-  player: Player
-  game: Game
+  player: Player;
+  game: Game;
 }
 
 const Board = ({ player, game }: Props) => (
@@ -34,15 +35,17 @@ const Board = ({ player, game }: Props) => (
             cardIndex
           ),
         }
-      )
+      );
       const wordClasses = classnames('text-white', {
+        'text-white': !isMissCard(game, cardIndex) || isCardsColorVisible(game, player, cardIndex),
+        'text-gray-600': isMissCard(game, cardIndex) && isCardsColorVisible(game, player, cardIndex),
         'line-through': isCardSelected(game, cardIndex),
-      })
+      });
       const wordStyle: CSSProperties = areVotesVisible(game, cardIndex)
         ? {
             margin: 0,
           }
-        : {}
+        : {};
 
       return (
         <div
@@ -66,9 +69,9 @@ const Board = ({ player, game }: Props) => (
             </p>
           )}
         </div>
-      )
+      );
     })}
   </div>
-)
+);
 
 export default Board;
