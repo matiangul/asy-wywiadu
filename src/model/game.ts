@@ -229,6 +229,16 @@ export function roundsColor(game: Game): TeamColor {
   return game.round % 2 === 0 ? game.startingColor : oppositeTeamColor(game.startingColor);
 }
 
+function roundColor(round: number, startingColor: TeamColor): TeamColor {
+  return round % 2 === 0 ? startingColor : oppositeTeamColor(startingColor);
+}
+
+export function teamsPreviousPasswords(game: Game, teamColor: TeamColor): string[] {
+  return game.roundsPassword
+    .slice(0, game.roundsPassword.length - 1)
+    .filter((_, round) => roundColor(round, game.startingColor) === teamColor);
+}
+
 export function startGame(game: Game): Game {
   const changedGame = cloneGame(game);
 
