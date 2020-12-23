@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { useState } from 'react';
-import { Game } from '../model/game';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Game } from '../model/game';
 
 interface Props {
   gameName: Game['name'];
@@ -21,7 +21,28 @@ function share(gameName: Game['name']): void {
 
 const Share = ({ gameName }: Props) => {
   if (isSharingEnabled()) {
-    return <button onClick={() => share(gameName)}>Zaproś znajomych</button>;
+    return (
+      <button
+        className="w-full mt-2 bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded"
+        onClick={() => share(gameName)}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="inline w-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+          />
+        </svg>
+        <span className="align-text-top">&nbsp;&nbsp;Zaproś znajomych</span>
+      </button>
+    );
   } else {
     const [copyAlertShown, setCopyAlertShown] = useState(false);
     const showAnAlert = () => {
@@ -57,7 +78,7 @@ const Share = ({ gameName }: Props) => {
         <div
           className={`${
             copyAlertShown ? 'block' : 'hidden'
-          } bg-teal-100 rounded mt-2 text-teal-900 px-4 py-3 shadow-md`}
+          } bg-white rounded mt-2 text-teal-900 px-4 py-3 shadow-md`}
           role="alert"
         >
           <div className="flex flex-row">
