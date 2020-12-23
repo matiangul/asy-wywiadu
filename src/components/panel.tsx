@@ -8,7 +8,8 @@ import {
   remainingTeamCardsCount,
   roundsColor,
   setRoundsPassword,
-  voteForRoundEnd,
+  teamsPreviousPasswords,
+  voteForRoundEnd
 } from '../model/game';
 import { isGuesser, isLeader, Player } from '../model/player';
 import { updateGame } from '../store/repository';
@@ -26,6 +27,8 @@ type Props = {
 const Panel = ({ className, game, player }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>('info');
   const [password, setPassword] = useState<string>('');
+
+  const previousPasswords = teamsPreviousPasswords(game, player.color);
 
   return (
     <div className={className}>
@@ -128,6 +131,15 @@ const Panel = ({ className, game, player }: Props) => {
           <div>
             {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
             hasło to: <span className="font-bold">"{game.roundsPassword[game.round]}"</span>
+          </div>
+
+          <div className="sm:col-span-2 md:col-span-4">
+            Wasze poprzednie hasła:{' '}
+            {previousPasswords.length > 0 &&
+              teamsPreviousPasswords(game, player.color)
+                .map((text) => `"${text}"`)
+                .join(', ')}
+            {previousPasswords.length === 0 && '...'}
           </div>
 
           {isGuesser(player) && isPlayersRound(game, player) && (
