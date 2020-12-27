@@ -11,18 +11,18 @@ const IndexPage = () => {
       <ControlContent>
         <ControlMain
           title="Witam w grze Asy Wywiadu"
-          subtitle="Możesz tutaj stworzyć nową grę lub dołączyć do istniejącej"
+          subtitle="Możesz tutaj otworzyć nową sprawę lub dołączyć do trwającej"
         >
           <div className="grid grid-cols-2 grid-rows-1 gap-4 grid-flow-row-dense text-xl">
             <Link href="/create">
               <button className="bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded">
-                Rozpocznij nową grę
+                Otwórz nową sprawę
               </button>
             </Link>
 
             <Link href="/join">
               <button className="bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded">
-                Dołącz do gry
+                Dołącz do trwającej sprawy
               </button>
             </Link>
           </div>

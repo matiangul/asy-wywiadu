@@ -52,7 +52,7 @@ const JoinPage = () => {
       <ControlHeader title="Asy wywiadu - dołącz do gry" />
 
       <ControlContent>
-        <ControlMain title="Hej Asie" subtitle="Tutaj możesz dołączyć do istniejącej gry">
+        <ControlMain title="Hej Asie" subtitle="Tutaj możesz dołączyć do trwającej sprawy">
           <div className="grid grid-cols-3 grid-rows-1 gap-4 grid-flow-row-dense">
             <form className="col-span-2">
               <label className="block">
