@@ -75,7 +75,7 @@ const  CreatePage = () => {
                     onClick={start}
                     className={`mt-2 bg-${startingColor} text-white py-2 px-4 border-b-4 border-${startingColor} hover:bg-opacity-75 rounded`}
                   >
-                    Rozpocznij grę
+                    Rozpocznij pracę nad sprawą
                   </button>
                 </>
               )}
