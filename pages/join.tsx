@@ -56,7 +56,7 @@ const JoinPage = () => {
           <div className="grid grid-cols-3 grid-rows-1 gap-4 grid-flow-row-dense">
             <form className="col-span-2">
               <label className="block">
-                <span className="text-gray-700">Nazwa rozgrywki</span>
+                <span className="text-gray-700">Nazwa sprawy</span>
                 <input
                   type="text"
                   name="gameName"
@@ -87,7 +87,7 @@ const JoinPage = () => {
                     />
                   </label>
                   <div className="mt-2">
-                    <span className="tex-2xl">Wybierz drużynę</span>
+                    <span className="tex-2xl">Wybierz zespół</span>
                     <div className="mt-2">
                       <div>
                         <label className="inline-flex items-center">
@@ -130,7 +130,7 @@ const JoinPage = () => {
                     </div>
                   </div>
                   <div className="mt-2">
-                    <span className="tex-2xl">Wybierz swoją rolę w drużynie</span>
+                    <span className="tex-2xl">Wybierz swoją rolę w zespole</span>
                     <div className="mt-2">
                       <div>
                         <label className="inline-flex items-center">
@@ -145,7 +145,7 @@ const JoinPage = () => {
                               setPlayer((player) => ({ ...player, role: role as Role }));
                             }}
                           />
-                          <span className="ml-2">Zgadywacz</span>
+                          <span className="ml-2">Detektyw</span>
                         </label>
                       </div>
                       {!hasLeader(game, player.color) && (
@@ -162,7 +162,7 @@ const JoinPage = () => {
                                 setPlayer((player) => ({ ...player, role: role as Role }));
                               }}
                             />
-                            <span className="ml-2">Lider</span>
+                            <span className="ml-2">Szpieg</span>
                           </label>
                         </div>
                       )}
@@ -185,7 +185,7 @@ const JoinPage = () => {
                         className={`mt-2 w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
                       >
                         <span className="ml-1 align-middle">
-                          Dołącz jako {isLeader(player) ? 'lider' : 'zgadywacz'}{' '}
+                          Dołącz jako {isLeader(player) ? 'szpieg' : 'detektyw'}{' '}
                         </span>
                         {isLeader(player) ? (
                           <LeaderIcon color="white" />

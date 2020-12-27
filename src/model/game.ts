@@ -352,5 +352,27 @@ export function togglePlayersActiveState(game: Game, player: Player): Game {
 
   changedGame.players[playerIndex].active = !changedGame.players[playerIndex].active;
 
+  if (
+    getEndRoundVotes(changedGame).length ===
+    fellowGuessers(filterActivePlayers(changedGame.players), player).length
+  ) {
+    return nextRound(changedGame);
+  }
+
+  for (let cardIndex = 0; cardIndex < game.board.length; cardIndex++) {
+    if (
+      fellowGuessers(filterActivePlayers(changedGame.players), player).length ===
+      getRoundsCardVotes(changedGame, cardIndex).length
+    ) {
+      changedGame.selected.push(cardIndex);
+    }
+    if (
+      isCardSelected(changedGame, cardIndex) &&
+      isRoundTerminatingColor(getCardColor(game, cardIndex), player.color)
+    ) {
+      return nextRound(changedGame);
+    }
+  }
+
   return changedGame;
 }
