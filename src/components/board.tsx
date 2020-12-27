@@ -4,7 +4,7 @@ import {
   areVotesVisible,
   areWordsVisible,
   Game,
-  getCardVotesPerRound,
+  getRoundsCardVotes,
   isCardsColorVisible,
   isCardSelected,
   isMissCard,
@@ -59,7 +59,7 @@ const Board = ({ player, game }: Props) => (
             <span className="flex absolute h-6 w-6 right-0 top-0 -mr-3 -mt-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-6 w-6 bg-pink-500 text-xs text-white pl-2 pt-1">
-                {getCardVotesPerRound(game, cardIndex).length}
+                {getRoundsCardVotes(game, cardIndex).length}
               </span>
             </span>
           )}
