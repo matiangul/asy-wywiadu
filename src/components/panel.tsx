@@ -10,7 +10,7 @@ import {
   setRoundsPassword,
   teamsPreviousPasswords,
   togglePlayersActiveState,
-  voteForRoundEnd
+  voteForRoundEnd,
 } from '../model/game';
 import { isGuesser, isLeader, isPlayerActive, Player } from '../model/player';
 import { updateGame } from '../store/repository';
@@ -71,7 +71,7 @@ const Panel = ({ className, game, player }: Props) => {
             game.roundsPassword[game.round].length === 0 && (
               <div className="sm:col-span-2 md:col-span-4">
                 <label className="block">
-                  <span className="text-gray-700">Wpisz hasło dla swojej drużyny:</span>
+                  <span className="text-gray-700">Daj wskazówkę swojemu zespołowi:</span>
                   <input
                     type="text"
                     name="password"
@@ -93,20 +93,20 @@ const Panel = ({ className, game, player }: Props) => {
                     updateGame(game.name, (remoteGame) => setRoundsPassword(remoteGame, password))
                   }
                 >
-                  Zatwierdź hasło
+                  Zatwierdź wskazówkę
                 </button>
               </div>
             )}
 
           <div>
             <span className="font-bold">{player.nick}</span> jesteś{' '}
-            <span>{isGuesser(player) ? ' zgadywaczem ' : ' liderem '}</span>
+            <span>{isGuesser(player) ? ' detektywem ' : ' szpiegiem '}</span>
             {isLeader(player) ? (
               <LeaderIcon color={player.color} />
             ) : (
               <GuesserIcon color={player.color} />
             )}{' '}
-            w drużynie {player.color === 'red' ? ' czerwonej' : ' niebieskiej'}
+            w {player.color === 'red' ? ' czerwonym' : ' niebieskim'} zespole
           </div>
 
           <div>
@@ -121,8 +121,8 @@ const Panel = ({ className, game, player }: Props) => {
           </div>
 
           <div>
-            {isPlayersRound(game, player) ? ' Przeciwnej ' : ' Waszej '}
-            {' drużynie zostało '}
+            {isPlayersRound(game, player) ? ' Przeciwnemu ' : ' Waszemu '}
+            {' zespołowi zostało '}
             <span className="font-bold">
               {remainingTeamCardsCount(game, oppositeTeamColor(roundsColor(game)))}/
               {allTeamCards(game, oppositeTeamColor(roundsColor(game))).length}
@@ -130,12 +130,12 @@ const Panel = ({ className, game, player }: Props) => {
           </div>
 
           <div>
-            {isPlayersRound(game, player) ? 'Wasze ' : 'Ich '}
-            hasło to: <span className="font-bold">"{game.roundsPassword[game.round]}"</span>
+            Wskazówka dla {isPlayersRound(game, player) ? 'was ' : 'nich '}
+            to: <span className="font-bold">"{game.roundsPassword[game.round]}"</span>
           </div>
 
           <div className="sm:col-span-2 md:col-span-4">
-            Wasze poprzednie hasła:{' '}
+            Wasze poprzednie wskazówki:{' '}
             {previousPasswords.length > 0 &&
               teamsPreviousPasswords(game, player.color)
                 .map((text) => `"${text}"`)
@@ -163,7 +163,9 @@ const Panel = ({ className, game, player }: Props) => {
                 type="button"
                 className={`flex-1 mr-2 bg-gray-500 text-white py-2 px-4 border-b-4 border-gray-500 hover:bg-opacity-75 rounded`}
                 onClick={() => {
-                  updateGame(game.name, (remoteGame) => togglePlayersActiveState(remoteGame, player));
+                  updateGame(game.name, (remoteGame) =>
+                    togglePlayersActiveState(remoteGame, player)
+                  );
                 }}
               >
                 Zaraz wracam
@@ -172,7 +174,9 @@ const Panel = ({ className, game, player }: Props) => {
                 type="button"
                 className={`flex-1 bg-gray-700 text-white py-2 px-4 border-b-4 border-gray-700 hover:bg-opacity-75 rounded`}
                 onClick={() => {
-                  updateGame(game.name, (remoteGame) => togglePlayersActiveState(remoteGame, player));
+                  updateGame(game.name, (remoteGame) =>
+                    togglePlayersActiveState(remoteGame, player)
+                  );
                 }}
               >
                 Opuszczam grę
@@ -186,7 +190,9 @@ const Panel = ({ className, game, player }: Props) => {
                 type="button"
                 className={`w-full bg-gray-500 text-white py-2 px-4 border-b-4 border-gray-500 hover:bg-opacity-75 rounded`}
                 onClick={() => {
-                  updateGame(game.name, (remoteGame) => togglePlayersActiveState(remoteGame, player));
+                  updateGame(game.name, (remoteGame) =>
+                    togglePlayersActiveState(remoteGame, player)
+                  );
                 }}
               >
                 Wracam do gry

@@ -35,7 +35,7 @@ const  CreatePage = () => {
       <ControlHeader title="Asy wywiadu - stwórz nową grę" />
 
       <ControlContent>
-        <ControlMain title="Hej Asie" subtitle="Jesteś w trybie tworzenia nowej rozgrywki">
+        <ControlMain title="Hej Asie" subtitle="Jesteś w trybie tworzenia nowej sprawy">
           <div className="grid grid-cols-3 grid-rows-1 gap-8 grid-flow-row-dense">
             <div className="text-right">
               <span className="tex-2xl">Kto zaczyna?</span>

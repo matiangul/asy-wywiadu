@@ -63,12 +63,12 @@ const GamePage = () => {
     return !isPlayersRound(game, player) ? (
       <>
         <p>Jesteś zwycięzcą!</p>
-        <p>Przeciwna drużyna zaznaczyła czarną kartę.</p>
+        <p>Przeciwny zespół odkrył zakazane hasło.</p>
       </>
     ) : (
       <>
         <p>Przegraliście :(</p>
-        <p>Niestety twoja drużyna zaznaczyła czarną kartę.</p>
+        <p>Niestety twój zespół okrył zakazane hasło.</p>
       </>
     );
   }
@@ -77,7 +77,7 @@ const GamePage = () => {
     return (
       <>
         <p>Jesteś zwycięzcą!</p>
-        <p>Twoja drużyna ma już wszystkie wasze hasła.</p>
+        <p>Twój zespół odgadł wszystkie hasła.</p>
       </>
     );
   }
@@ -89,7 +89,7 @@ const GamePage = () => {
     return (
       <>
         <p>Przegraliście :(</p>
-        <p>Niestety przeciwna drużyna ma już wszystkie swoje hasła.</p>
+        <p>Niestety przeciwny zespół odgadł już wszystkie swoje hasła.</p>
       </>
     );
   }
@@ -106,11 +106,7 @@ const GamePage = () => {
             game={game}
           />
         </div>
-        <Chat
-          className="hidden lg:flex h-screen pr-8 pt-8 pb-8"
-          game={game}
-          player={player}
-        />
+        <Chat className="hidden lg:flex h-screen pr-8 pt-8 pb-8" game={game} player={player} />
       </div>
       <button
         onClick={() => {
