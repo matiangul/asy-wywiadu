@@ -6,6 +6,7 @@ export interface Player {
   nick: string;
   color: TeamColor;
   role: Role;
+  active: boolean;
 }
 
 export function arePlayersSame(player1: Player, player2: Player): boolean {
@@ -37,4 +38,12 @@ export function arePlayersInSameTeam(
   player2: Player
 ): boolean {
   return player1.color === player2.color;
+}
+
+export function filterActivePlayers(players: Player[]): Player[] {
+  return players.filter(isPlayerActive);
+}
+
+export function isPlayerActive(player?: Player): boolean {
+  return player?.active ?? false;
 }

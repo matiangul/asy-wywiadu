@@ -11,6 +11,8 @@ import {
   arePlayersSame,
   fellowGuessers,
   fellowLeaders,
+  filterActivePlayers,
+  isPlayerActive,
   isGuesser,
   isLeader,
   Player,
@@ -110,7 +112,7 @@ function normalizeArrayToCurrentRound<T>(def: () => T, round: Game['round'], arr
   return arr;
 }
 
-export function selectedCards(game: Game): Card[] {
+function selectedCards(game: Game): Card[] {
   return game.selected.map((cardIndex) => game.board[cardIndex]);
 }
 
@@ -122,8 +124,16 @@ export function isPlayerInTheGame(game: Game, player: Player): boolean {
   return !!game.players.find((p) => arePlayersSame(p, player));
 }
 
+function getEndRoundVotes(game: Game): Votes {
+  return game.roundsEndRoundVotes[game.round].filter((v) => isActiveVote(v, game));
+}
+
+function isActiveVote(vote: Vote, game: Game): boolean {
+  return isPlayerActive(game.players.find((player) => areVotesSame(vote, getPlayersVote(player))));
+}
+
 export function voteForRoundEnd(game: Game, player: Player): Game {
-  const votes = game.roundsEndRoundVotes[game.round]
+  const votes = getEndRoundVotes(game)
     .filter((vote) => !areVotesSame(vote, getPlayersVote(player)))
     .concat(getPlayersVote(player));
 
@@ -133,7 +143,7 @@ export function voteForRoundEnd(game: Game, player: Player): Game {
   const changedGame = cloneGame(game);
   changedGame.roundsEndRoundVotes = newRoundsEndRoundVotes;
 
-  const guessers = fellowGuessers(changedGame.players, player);
+  const guessers = fellowGuessers(filterActivePlayers(changedGame.players), player);
 
   if (changedGame.roundsEndRoundVotes[game.round].length === guessers.length) {
     return nextRound(changedGame);
@@ -163,23 +173,25 @@ export function nextRound(game: Game): Game {
 }
 
 export function toggleCard(game: Game, player: Player, cardIndex: CardIndex): Game {
+  console.log(player);
   if (
     game.started &&
     isPlayersRound(game, player) &&
     isGuesser(player) &&
-    !isCardSelected(game, cardIndex)
+    !isCardSelected(game, cardIndex) &&
+    isPlayerActive(player)
   ) {
     const changedGame = cloneGame(game);
 
-    removeCardVoteForRoung(changedGame, getPlayersVote(player), cardIndex);
+    removeCardVoteForRound(changedGame, getPlayersVote(player), cardIndex);
 
     if (!isPlayersCardVoteInRound(game, player, cardIndex)) {
       addCardVoteForRound(changedGame, getPlayersVote(player), cardIndex);
     }
 
     if (
-      fellowGuessers(changedGame.players, player).length ===
-      getCardVotesPerRound(changedGame, cardIndex).length
+      fellowGuessers(filterActivePlayers(changedGame.players), player).length ===
+      getRoundsCardVotes(changedGame, cardIndex).length
     ) {
       changedGame.selected.push(cardIndex);
     }
@@ -226,7 +238,7 @@ export function remainingTeamCardsCount(game: Game, teamColor: TeamColor): numbe
 }
 
 export function roundsColor(game: Game): TeamColor {
-  return game.round % 2 === 0 ? game.startingColor : oppositeTeamColor(game.startingColor);
+  return roundColor(game.round, game.startingColor);
 }
 
 function roundColor(round: number, startingColor: TeamColor): TeamColor {
@@ -277,24 +289,32 @@ export function areWordsVisible(game: Game): boolean {
 
 export function isCardsColorVisible(game: Game, player: Player, cardIndex: CardIndex): boolean {
   return (
-    !!game.started && (isLeader(player) || (isGuesser(player) && isCardSelected(game, cardIndex)))
+    areWordsVisible(game) &&
+    isPlayerActive(player) &&
+    (isLeader(player) || (isGuesser(player) && isCardSelected(game, cardIndex)))
   );
 }
 
 export function areVotesVisible(game: Game, cardIndex: CardIndex): boolean {
+  console.log(getRoundsCardVotes(game, cardIndex));
   return (
-    !!game.started &&
+    areWordsVisible(game) &&
     !isCardSelected(game, cardIndex) &&
-    getCardVotesPerRound(game, cardIndex).length > 0
+    getRoundsCardVotes(game, cardIndex).length > 0
   );
 }
 
-export function getCardVotesPerRound(game: Game, cardIndex: CardIndex): Votes {
-  return Array.from(new Set(game.board[cardIndex].votesPerRound[game.round]));
+export function getRoundsCardVotes(game: Game, cardIndex: CardIndex): Votes {
+  const allPlayersVotes = filterActivePlayers(game.players).map(getPlayersVote);
+  const cardVotes = Array.from(new Set(game.board[cardIndex].votesPerRound[game.round]));
+
+  return cardVotes.filter(
+    (cardVote) => allPlayersVotes.findIndex((playerVote) => cardVote === playerVote) !== -1
+  );
 }
 
 export function isMyVoteForCardInRound(game: Game, player: Player, cardIndex: CardIndex): boolean {
-  return !!getCardVotesPerRound(game, cardIndex).find((vote) => vote === getPlayersVote(player));
+  return !!getRoundsCardVotes(game, cardIndex).find((vote) => vote === getPlayersVote(player));
 }
 
 export function hasLeader(game: Game, color: TeamColor): boolean {
@@ -309,18 +329,28 @@ function addCardVoteForRound(game: Game, vote: Vote, cardIndex: CardIndex): void
   game.board[cardIndex].votesPerRound[game.round].push(vote);
 }
 
-function removeCardVoteForRoung(game: Game, vote: Vote, cardIndex: CardIndex): void {
+function removeCardVoteForRound(game: Game, vote: Vote, cardIndex: CardIndex): void {
   game.board[cardIndex].votesPerRound[game.round] = game.board[cardIndex].votesPerRound[
     game.round
   ].filter((existingVote) => existingVote !== vote);
 }
 
 function isPlayersCardVoteInRound(game: Game, player: Player, cardIndex: CardIndex): boolean {
-  return !!getCardVotesPerRound(game, cardIndex).find((vote) =>
+  // get rounds card votes returns only active players votes
+  return !!getRoundsCardVotes(game, cardIndex).find((vote) =>
     areVotesSame(vote, getPlayersVote(player))
   );
 }
 
 export function findPlayerByNick(game: Game, nick: string): Player | undefined {
   return game.players.find((p) => p.nick === nick);
+}
+
+export function togglePlayersActiveState(game: Game, player: Player): Game {
+  const changedGame = cloneGame(game);
+  const playerIndex = changedGame.players.findIndex((p) => arePlayersSame(p, player));
+
+  changedGame.players[playerIndex].active = !changedGame.players[playerIndex].active;
+
+  return changedGame;
 }

@@ -9,9 +9,10 @@ import {
   roundsColor,
   setRoundsPassword,
   teamsPreviousPasswords,
+  togglePlayersActiveState,
   voteForRoundEnd
 } from '../model/game';
-import { isGuesser, isLeader, Player } from '../model/player';
+import { isGuesser, isLeader, isPlayerActive, Player } from '../model/player';
 import { updateGame } from '../store/repository';
 import GuesserIcon from './guesser.icon';
 import LeaderIcon from './leader.icon';
@@ -152,6 +153,43 @@ const Panel = ({ className, game, player }: Props) => {
                 }}
               >
                 Koniec rundy
+              </button>
+            </div>
+          )}
+
+          {isGuesser(player) && isPlayerActive(player) && (
+            <div className="sm:col-span-2 md:col-span-4 flex">
+              <button
+                type="button"
+                className={`flex-1 mr-2 bg-gray-500 text-white py-2 px-4 border-b-4 border-gray-500 hover:bg-opacity-75 rounded`}
+                onClick={() => {
+                  updateGame(game.name, (remoteGame) => togglePlayersActiveState(remoteGame, player));
+                }}
+              >
+                Zaraz wracam
+              </button>
+              <button
+                type="button"
+                className={`flex-1 bg-gray-700 text-white py-2 px-4 border-b-4 border-gray-700 hover:bg-opacity-75 rounded`}
+                onClick={() => {
+                  updateGame(game.name, (remoteGame) => togglePlayersActiveState(remoteGame, player));
+                }}
+              >
+                Opuszczam grę
+              </button>
+            </div>
+          )}
+
+          {isGuesser(player) && !isPlayerActive(player) && (
+            <div className="sm:col-span-2 md:col-span-4">
+              <button
+                type="button"
+                className={`w-full bg-gray-500 text-white py-2 px-4 border-b-4 border-gray-500 hover:bg-opacity-75 rounded`}
+                onClick={() => {
+                  updateGame(game.name, (remoteGame) => togglePlayersActiveState(remoteGame, player));
+                }}
+              >
+                Wracam do gry
               </button>
             </div>
           )}

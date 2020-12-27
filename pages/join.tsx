@@ -33,6 +33,7 @@ const JoinPage = () => {
     nick: '',
     color: 'red' as TeamColor,
     role: 'guesser' as Role,
+    active: true,
   };
   const [player, setPlayer] = useState<Player>(defaultPlayerSettings);
   useEffect(() => {
