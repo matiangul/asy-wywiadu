@@ -10,9 +10,11 @@ import { createGame, Game, startGame } from '../src/model/game';
 import { wordsGenerator } from '../src/model/word';
 import { createNewGame, updateGame } from '../src/store/repository';
 
-const  CreatePage = () => {
+const CreatePage = () => {
   const router = useRouter();
   const [startingColor, changeStartingColor] = useState<TeamColor>('red');
+  const [restrictRoundTime, changeRestrictRoundTime] = useState<boolean>(false);
+  const [roundTimeoutMin, changeRoundTimeoutMin] = useState<number>(3);
   const emptyGame = { name: null };
   const [game, setGame] = useState<Partial<Game>>(emptyGame);
   const changeWhoStarts = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,8 +29,10 @@ const  CreatePage = () => {
 
   useEffect(() => {
     setGame(emptyGame);
-    createNewGame(createGame(wordsGenerator(25), startingColor)).then(setGame);
-  }, [startingColor]);
+    createNewGame(
+      createGame(wordsGenerator(25), startingColor, restrictRoundTime ? roundTimeoutMin * 60 : null)
+    ).then(setGame);
+  }, [startingColor, roundTimeoutMin, restrictRoundTime]);
 
   return (
     <>
@@ -36,8 +40,8 @@ const  CreatePage = () => {
 
       <ControlContent>
         <ControlMain title="Hej Asie" subtitle="Jesteś w trybie tworzenia nowej sprawy">
-          <div className="grid grid-cols-3 grid-rows-1 gap-8 grid-flow-row-dense">
-            <div className="text-right">
+          <div className="grid grid-cols-2 grid-rows-1 gap-8 grid-flow-row-dense">
+            <div>
               <span className="tex-2xl">Kto zaczyna?</span>
               <div className="mt-2">
                 <div>
@@ -65,8 +69,53 @@ const  CreatePage = () => {
                   </label>
                 </div>
               </div>
+              <div className="mt-2">
+                <span className="text-gray-700">Ograniczyć czas trwania rundy?</span>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="restrict"
+                      checked={restrictRoundTime}
+                      onChange={() => changeRestrictRoundTime(true)}
+                    />
+                    <span className="ml-2">Tak</span>
+                  </label>
+                  <label className="inline-flex items-center ml-6">
+                    <input
+                      type="radio"
+                      className="form-radio"
+                      name="restrict"
+                      checked={!restrictRoundTime}
+                      onChange={() => changeRestrictRoundTime(false)}
+                    />
+                    <span className="ml-2">Nie</span>
+                  </label>
+                </div>
+              </div>
+              {restrictRoundTime && (
+                <div className="mt-2">
+                  <label className="block mt-2">
+                    <span className="text-gray-700">Ile minut ma trwać runda?</span>
+                    <input
+                      type="number"
+                      min={1}
+                      name="roundTimeoutMin"
+                      className="form-input mt-1 block w-full"
+                      placeholder=""
+                      value={roundTimeoutMin}
+                      onChange={(e) => {
+                        const value = e.target.value.trim();
+                        const numeric = value.length > 0 ? parseInt(value, 10) : null;
+                        changeRoundTimeoutMin(numeric);
+                      }}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
-            <div className="flex flex-col col-span-2">
+            <div className="flex flex-col">
               {isCreated && (
                 <>
                   <Share gameName={game.name} />

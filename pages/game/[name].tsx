@@ -13,10 +13,12 @@ import {
   isBombCardSelected,
   isPlayerInTheGame,
   isPlayersRound,
+  isRoundOver,
+  nextRound,
   selectedTeamCards,
 } from '../../src/model/game';
-import { Player } from '../../src/model/player';
-import { loadGame, loadPlayer, watchGame } from '../../src/store/repository';
+import { isLeader, Player } from '../../src/model/player';
+import { loadGame, loadPlayer, updateGame, watchGame } from '../../src/store/repository';
 
 const GamePage = () => {
   const router = useRouter();
@@ -42,6 +44,26 @@ const GamePage = () => {
 
   const [isPanelOpen, setPanelVisibility] = useState<boolean>(false);
   const [isChatOpen, setChatVisibility] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isRoundsLeader = () => game && player && isLeader(player) && isPlayersRound(game, player);
+
+    if (isRoundsLeader()) {
+      const interval = setInterval(() => {
+        if (game && isRoundOver(game)) {
+          console.log('round is over', player);
+          updateGame(game.name, (remoteGame) => nextRound(remoteGame));
+          clearInterval(interval);
+        }
+
+        if (game && !isRoundOver(game)) {
+          console.log('round is not over yet', player);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [game, player]);
 
   if (game === undefined) {
     return <p>Momencik, już szukam tej gry w internetach...</p>;

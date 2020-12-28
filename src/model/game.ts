@@ -31,7 +31,9 @@ export interface Game {
   startingColor: TeamColor;
   roundsPassword: string[];
   players: Player[];
-  started: Timestamp;
+  started?: Timestamp;
+  roundStarted?: Timestamp;
+  roundTimeout: number;
   roundsEndRoundVotes: Votes[];
   selected: CardIndex[];
   board: Card[];
@@ -43,7 +45,11 @@ export interface Card {
   color: Color;
 }
 
-export function createGame(words: Word[], startingColor: TeamColor): Game {
+export function createGame(
+  words: Word[],
+  startingColor: TeamColor,
+  roundTimeoutSec?: number
+): Game {
   const coloredWords = colorWords(words, startingColor);
 
   return {
@@ -53,6 +59,8 @@ export function createGame(words: Word[], startingColor: TeamColor): Game {
     roundsPassword: [''],
     players: [],
     started: null,
+    roundStarted: null,
+    roundTimeout: (roundTimeoutSec ?? 0) * 1000,
     roundsEndRoundVotes: [[]],
     selected: [],
     board: words.map((word) => ({
@@ -168,12 +176,22 @@ export function nextRound(game: Game): Game {
   const changedGame = cloneGame(game);
 
   changedGame.round += 1;
+  changedGame.roundStarted = null;
 
   return normalizeGame(changedGame);
 }
 
+export function isRoundOver(game: Game): boolean {
+  console.log(game.roundStarted, game.roundTimeout, game.roundStarted + game.roundTimeout, Date.now(), game.roundStarted + game.roundTimeout <= Date.now());
+
+  return (
+    game.roundStarted &&
+    game.roundTimeout > 0 &&
+    game.roundStarted + game.roundTimeout <= Date.now()
+  );
+}
+
 export function toggleCard(game: Game, player: Player, cardIndex: CardIndex): Game {
-  console.log(player);
   if (
     game.started &&
     isPlayersRound(game, player) &&
@@ -279,6 +297,7 @@ export function setRoundsPassword(game: Game, password: string): Game {
   const changedGame = cloneGame(game);
 
   changedGame.roundsPassword[game.round] = password;
+  changedGame.roundStarted = Date.now();
 
   return changedGame;
 }
@@ -296,7 +315,6 @@ export function isCardsColorVisible(game: Game, player: Player, cardIndex: CardI
 }
 
 export function areVotesVisible(game: Game, cardIndex: CardIndex): boolean {
-  console.log(getRoundsCardVotes(game, cardIndex));
   return (
     areWordsVisible(game) &&
     !isCardSelected(game, cardIndex) &&
