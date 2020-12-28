@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import Countdown, { zeroPad } from 'react-countdown';
 import { oppositeTeamColor } from '../model/color';
 import {
   allTeamCards,
   Game,
   groupedPlayers,
   isPlayersRound,
+  isRoundOver,
   remainingTeamCardsCount,
   roundsColor,
   setRoundsPassword,
@@ -28,7 +30,7 @@ type Props = {
 const Panel = ({ className, game, player }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>('info');
   const [password, setPassword] = useState<string>('');
-
+  let countdown = null;
   const previousPasswords = teamsPreviousPasswords(game, player.color);
 
   return (
@@ -50,6 +52,19 @@ const Panel = ({ className, game, player }: Props) => {
         >
           Informacje
         </button>
+        {isPlayersRound(game, player) &&
+          !isRoundOver(game) &&
+          game.roundStarted &&
+          game.roundTimeout && (
+            <Countdown
+              date={game.roundStarted + game.roundTimeout}
+              renderer={({ minutes, seconds }) => (
+                <div>
+                  {zeroPad(minutes)}:{zeroPad(seconds)}
+                </div>
+              )}
+            />
+          )}
       </div>
 
       {activeTab === 'players' && (
