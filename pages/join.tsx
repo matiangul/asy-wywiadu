@@ -137,7 +137,7 @@ const JoinPage = () => {
                           <input
                             type="radio"
                             name="playerRole"
-                            className="form-radio text-pink-500"
+                            className={`form-radio text-${player.color}`}
                             value="guesser"
                             checked={player.role === 'guesser'}
                             onChange={(e) => {
@@ -145,7 +145,7 @@ const JoinPage = () => {
                               setPlayer((player) => ({ ...player, role: role as Role }));
                             }}
                           />
-                          <span className="ml-2">Detektyw</span>
+                          <span className="ml-2 align-middle">Detektyw</span>&nbsp;&nbsp;<GuesserIcon color={player.color}/>
                         </label>
                       </div>
                       {!hasLeader(game, player.color) && (
@@ -154,7 +154,7 @@ const JoinPage = () => {
                             <input
                               type="radio"
                               name="playerRole"
-                              className="form-radio text-pink-500"
+                              className={`form-radio text-${player.color}`}
                               value="leader"
                               checked={player.role === 'leader'}
                               onChange={(e) => {
@@ -162,7 +162,7 @@ const JoinPage = () => {
                                 setPlayer((player) => ({ ...player, role: role as Role }));
                               }}
                             />
-                            <span className="ml-2">Szpieg</span>
+                            <span className="ml-2 align-middle">Szpieg</span>&nbsp;&nbsp;<LeaderIcon color={player.color}/>
                           </label>
                         </div>
                       )}
