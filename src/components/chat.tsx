@@ -65,53 +65,49 @@ const Chat = ({ className, game, player }: { className: string; game: Game; play
 
   return (
     <div className={`flex antialiased text-gray-800 ${className}`}>
-      <div className="flex flex-row w-full overflow-x-hidden">
-        <div className="flex flex-col flex-auto">
-          <div className="flex flex-col flex-auto flex-shrink-0 rounded-lg bg-gray-100 h-full p-4">
-            <div className="flex flex-col overflow-x-auto mb-4 flex-1">
-              <div className="flex flex-col">
-                <div className="grid grid-cols-12 gap-y-2">
-                  {messages?.length > 0 &&
-                    messages.map((msg) => (
-                      <ChatMessage
-                        key={msg.id}
-                        msg={msg}
-                        sender={findPlayerByNick(game, msg.nick)}
-                        player={player}
-                      />
-                    ))}
-                  <span ref={bottomOfTheChat}></span>
-                </div>
-              </div>
+      <div className="flex flex-col flex-auto rounded-lg bg-gray-100 h-full p-4 shadow-md">
+        <div className="flex flex-col overflow-x-auto mb-4 flex-1">
+          <div className="flex flex-col">
+            <div className="grid grid-cols-12 gap-y-2">
+              {messages?.length > 0 &&
+                messages.map((msg) => (
+                  <ChatMessage
+                    key={msg.id}
+                    msg={msg}
+                    sender={findPlayerByNick(game, msg.nick)}
+                    player={player}
+                  />
+                ))}
+              <span ref={bottomOfTheChat}></span>
             </div>
-            <form onSubmit={sendMessage}>
-              <div className="flex flex-row items-center h-16 rounded-xl w-full px-2">
-                <div className="flex-grow">
-                  <div className="relative w-full">
-                    <input
-                      value={formValue}
-                      onChange={(e) => setFormValue(e.target.value)}
-                      type="text"
-                      className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
-                    />
-                  </div>
-                </div>
-                <div className="ml-2">
-                  <button
-                    type="submit"
-                    disabled={!formValue}
-                    className={`flex items-center justify-center bg-${player.color} hover:bg-opacity-75 rounded-xl text-white px-4 py-1 h-10 flex-shrink-0`}
-                  >
-                    <span>Send</span>
-                    <span className="ml-2">
-                      <SendIcon />
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </form>
           </div>
         </div>
+        <form onSubmit={sendMessage}>
+          <div className="flex flex-row items-center h-16 rounded-xl w-full px-2">
+            <div className="flex-grow">
+              <div className="relative w-full">
+                <input
+                  value={formValue}
+                  onChange={(e) => setFormValue(e.target.value)}
+                  type="text"
+                  className="flex w-full form-input pl-4 h-10 rounded-md border-2"
+                />
+              </div>
+            </div>
+            <div className="ml-2">
+              <button
+                type="submit"
+                disabled={!formValue}
+                className={`flex items-center justify-center bg-${player.color} hover:bg-opacity-75 rounded-md text-white px-4 py-1 h-10 flex-shrink-0`}
+              >
+                <span>Wyślij</span>
+                <span className="ml-2">
+                  <SendIcon />
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ interface Props {
 }
 
 const ControlContent = ({ children }: Props) => (
-  <div className="flex justify-center items-center min-h-screen p-2 bg-beige text-gray-700 flex-col font-serif">
+  <div className="flex justify-center items-center min-h-screen p-2 text-gray-700 flex-col">
     {children}
   </div>
 );

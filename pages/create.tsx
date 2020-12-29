@@ -4,6 +4,7 @@ import ControlContent from '../src/components/control.content';
 import ControlFooter from '../src/components/control.footer';
 import ControlHeader from '../src/components/control.header';
 import ControlMain from '../src/components/control.main';
+import InstructionLink from '../src/components/instruction.link';
 import Share from '../src/components/share';
 import { TeamColor } from '../src/model/color';
 import { createGame, Game, startGame } from '../src/model/game';
@@ -102,8 +103,7 @@ const CreatePage = () => {
                       type="number"
                       min={1}
                       name="roundTimeoutMin"
-                      className="form-input mt-1 block w-full"
-                      placeholder=""
+                      className="form-input mt-1 block w-full border-2 rounded-md"
                       value={roundTimeoutMin}
                       onChange={(e) => {
                         const value = e.target.value.trim();
@@ -116,35 +116,17 @@ const CreatePage = () => {
               )}
             </div>
             <div className="flex flex-col">
-              {isCreated && (
-                <>
-                  <Share gameName={game.name} />
-                  <p className="mt-2">A następnie:</p>
-                  <button
-                    onClick={start}
-                    className={`mt-2 bg-${startingColor} text-white py-2 px-4 border-b-4 border-${startingColor} hover:bg-opacity-75 rounded`}
-                  >
-                    Rozpocznij pracę nad sprawą
-                  </button>
-                </>
-              )}
-              {!isCreated && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-8"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                  />
-                </svg>
-              )}
+              <Share disabled={!isCreated} gameName={game.name} />
+              <p className="mt-2">A następnie:</p>
+              <button
+                disabled={!isCreated}
+                onClick={start}
+                className={`mt-2 bg-${startingColor} text-white py-2 px-4 border-b-4 border-${startingColor} hover:bg-opacity-75 rounded`}
+              >
+                Rozpocznij pracę nad sprawą
+              </button>
             </div>
+            <InstructionLink />
           </div>
         </ControlMain>
         <ControlFooter />

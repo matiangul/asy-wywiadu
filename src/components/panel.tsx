@@ -17,9 +17,10 @@ import {
 import { isGuesser, isLeader, isPlayerActive, Player } from '../model/player';
 import { updateGame } from '../store/repository';
 import GuesserIcon from './guesser.icon';
+import Instruction from './instruction';
 import LeaderIcon from './leader.icon';
 
-type Tab = 'players' | 'info';
+type Tab = 'players' | 'info' | 'instruction';
 
 type Props = {
   className: string;
@@ -30,7 +31,6 @@ type Props = {
 const Panel = ({ className, game, player }: Props) => {
   const [activeTab, setActiveTab] = useState<Tab>('info');
   const [password, setPassword] = useState<string>('');
-  let countdown = null;
   const previousPasswords = teamsPreviousPasswords(game, player.color);
 
   return (
@@ -51,6 +51,14 @@ const Panel = ({ className, game, player }: Props) => {
           } px-3 py-2 rounded-md text-sm font-medium`}
         >
           Informacje
+        </button>
+        <button
+          onClick={() => setActiveTab('instruction')}
+          className={`text-white hover:bg-gray-800 ${
+            activeTab === 'instruction' ? 'bg-gray-600' : 'bg-gray-400'
+          } px-3 py-2 rounded-md text-sm font-medium`}
+        >
+          Instrukcja
         </button>
         {isPlayersRound(game, player) &&
           !isRoundOver(game) &&
@@ -79,6 +87,12 @@ const Panel = ({ className, game, player }: Props) => {
         </div>
       )}
 
+      {activeTab === 'instruction' && (
+        <div className="mt-4">
+          <Instruction />
+        </div>
+      )}
+
       {activeTab === 'info' && (
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 grid-flow-row-dense">
           {isLeader(player) &&
@@ -90,8 +104,9 @@ const Panel = ({ className, game, player }: Props) => {
                   <input
                     type="text"
                     name="password"
-                    className="w-full form-input mt-1 block"
+                    className="w-full form-input mt-1 block placeholder-gray-200 rounded-md border-2"
                     placeholder={game.roundsPassword[game.round] || 'Narzędzie 3'}
+                    autoFocus
                     disabled={game.roundsPassword[game.round].length > 0}
                     value={password}
                     onChange={(e) => {
