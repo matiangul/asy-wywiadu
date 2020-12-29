@@ -158,13 +158,18 @@ export function toggleVoteForRoundEnd(game: Game, player: Player): Game {
   const changedGame = cloneGame(game);
   changedGame.roundsEndRoundVotes = newRoundsEndRoundVotes;
 
-  const guessers = fellowGuessers(filterActivePlayers(changedGame.players), player);
+  return checkForRoundOver(changedGame, player);
+}
 
-  if (changedGame.roundsEndRoundVotes[game.round].length === guessers.length) {
-    return nextRound(changedGame);
+function checkForRoundOver(game: Game, player: Player): Game {
+  const guessers = fellowGuessers(filterActivePlayers(game.players), player);
+  const endRoundVotes = getEndRoundVotes(game);
+
+  if (endRoundVotes.length === guessers.length) {
+    return nextRound(game);
   }
 
-  return changedGame;
+  return game;
 }
 
 function getPlayersVote(player: Player): Vote {
@@ -212,21 +217,25 @@ export function toggleCard(game: Game, player: Player, cardIndex: CardIndex): Ga
       addCardVoteForRound(changedGame, getPlayersVote(player), cardIndex);
     }
 
-    if (
-      fellowGuessers(filterActivePlayers(changedGame.players), player).length ===
-      getRoundsCardVotes(changedGame, cardIndex).length
-    ) {
-      changedGame.selected.push(cardIndex);
-    }
+    return checkCardSelection(changedGame, player, cardIndex);
+  }
 
-    if (
-      isCardSelected(changedGame, cardIndex) &&
-      isRoundTerminatingColor(getCardColor(game, cardIndex), player.color)
-    ) {
-      return nextRound(changedGame);
-    }
+  return game;
+}
 
-    return changedGame;
+function checkCardSelection(game: Game, player: Player, cardIndex: CardIndex): Game {
+  if (
+    fellowGuessers(filterActivePlayers(game.players), player).length ===
+    getRoundsCardVotes(game, cardIndex).length
+  ) {
+    game.selected.push(cardIndex);
+  }
+
+  if (
+    isCardSelected(game, cardIndex) &&
+    isRoundTerminatingColor(getCardColor(game, cardIndex), player.color)
+  ) {
+    return nextRound(game);
   }
 
   return game;
@@ -375,27 +384,23 @@ export function togglePlayersActiveState(game: Game, player: Player): Game {
 
   changedGame.players[playerIndex].active = !changedGame.players[playerIndex].active;
 
-  if (
-    getEndRoundVotes(changedGame).length ===
-    fellowGuessers(filterActivePlayers(changedGame.players), player).length
-  ) {
-    return nextRound(changedGame);
+  const changedPlayer = changedGame.players[playerIndex];
+
+  if (!isPlayersRound(changedGame, changedPlayer)) {
+    return changedGame;
   }
 
-  for (let cardIndex = 0; cardIndex < game.board.length; cardIndex++) {
-    if (
-      fellowGuessers(filterActivePlayers(changedGame.players), player).length ===
-      getRoundsCardVotes(changedGame, cardIndex).length
-    ) {
-      changedGame.selected.push(cardIndex);
-    }
-    if (
-      isCardSelected(changedGame, cardIndex) &&
-      isRoundTerminatingColor(getCardColor(game, cardIndex), player.color)
-    ) {
-      return nextRound(changedGame);
+  // check for card selection and round end if this is suspended player round
+
+  for (let cardIndex = 0; cardIndex < changedGame.board.length; cardIndex++) {
+    const newGame = checkCardSelection(changedGame, changedPlayer, cardIndex);
+
+    if (newGame.round !== changedGame.round) {
+      // if card selection caused next round to start then break here
+      return newGame;
     }
   }
 
-  return changedGame;
+  // when no card has caused round to increment then check whether end votes
+  return checkForRoundOver(changedGame, changedPlayer);
 }
