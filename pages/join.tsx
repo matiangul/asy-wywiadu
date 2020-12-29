@@ -7,6 +7,7 @@ import ControlHeader from '../src/components/control.header';
 import ControlMain from '../src/components/control.main';
 import GuesserIcon from '../src/components/guesser.icon';
 import LeaderIcon from '../src/components/leader.icon';
+import InstructionLink from '../src/components/instruction.link';
 import { TeamColor } from '../src/model/color';
 import { Game, groupedPlayers, hasLeader } from '../src/model/game';
 import { isGuesser, isLeader, Player, Role } from '../src/model/player';
@@ -53,15 +54,16 @@ const JoinPage = () => {
 
       <ControlContent>
         <ControlMain title="Hej Asie" subtitle="Tutaj możesz dołączyć do trwającej sprawy">
-          <div className="grid grid-cols-3 grid-rows-1 gap-4 grid-flow-row-dense">
-            <form className="col-span-2">
+          <div className="grid grid-cols-2 grid-rows-1 gap-4 grid-flow-row-dense">
+            <form>
               <label className="block">
                 <span className="text-gray-700">Nazwa sprawy</span>
                 <input
                   type="text"
                   name="gameName"
-                  className="form-input mt-1 block w-full"
+                  className="form-input mt-1 block w-full placeholder-gray-200 border-2 rounded-md"
                   placeholder="abc-def-123-456"
+                  autoFocus
                   disabled={!!router.query.name}
                   value={gameName}
                   onChange={(e) => {
@@ -77,8 +79,9 @@ const JoinPage = () => {
                     <input
                       type="text"
                       name="playerNick"
-                      className="form-input mt-1 block w-full"
+                      className="form-input mt-1 block w-full placeholder-gray-200 border-2 rounded-md"
                       placeholder="np. złowrogi ogr"
+                      autoFocus
                       value={player.nick}
                       onChange={(e) => {
                         const nick = e.target.value;
@@ -145,7 +148,8 @@ const JoinPage = () => {
                               setPlayer((player) => ({ ...player, role: role as Role }));
                             }}
                           />
-                          <span className="ml-2 align-middle">Detektyw</span>&nbsp;&nbsp;<GuesserIcon color={player.color}/>
+                          <span className="ml-2 align-middle">Detektyw</span>&nbsp;&nbsp;
+                          <GuesserIcon color={player.color} />
                         </label>
                       </div>
                       {!hasLeader(game, player.color) && (
@@ -162,7 +166,8 @@ const JoinPage = () => {
                                 setPlayer((player) => ({ ...player, role: role as Role }));
                               }}
                             />
-                            <span className="ml-2 align-middle">Szpieg</span>&nbsp;&nbsp;<LeaderIcon color={player.color}/>
+                            <span className="ml-2 align-middle">Szpieg</span>&nbsp;&nbsp;
+                            <LeaderIcon color={player.color} />
                           </label>
                         </div>
                       )}
@@ -196,10 +201,14 @@ const JoinPage = () => {
                     )}
                 </>
               )}
-              {game === undefined && <p>Momencik, już szukam tej gry w internetach...</p>}
-              {game === null && <p>Nie ma takiej gry, sory :(</p>}
+              {game === undefined && gameName.length > 0 && (
+                <p>Momencik, już szukam tej sprawy...</p>
+              )}
+              {game === null && gameName.length > 0 && <p>Nie ma takiej sprawy, sory :(</p>}
             </form>
-            <div className="text-gray-700 p-2">
+            <div className="text-gray-700">
+              <p className="mb-2">Gracze, którzy już dołączyli do tej sprawy</p>
+              {game && groupedPlayers(game).length === 0 && <p>...</p>}
               {game &&
                 groupedPlayers(game).map((p) => (
                   <p className="truncate" key={p.nick}>
@@ -209,6 +218,7 @@ const JoinPage = () => {
                   </p>
                 ))}
             </div>
+            <InstructionLink />
           </div>
         </ControlMain>
         <ControlFooter />

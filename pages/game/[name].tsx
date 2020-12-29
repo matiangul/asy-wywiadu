@@ -51,13 +51,8 @@ const GamePage = () => {
     if (isRoundsLeader()) {
       const interval = setInterval(() => {
         if (game && isRoundOver(game)) {
-          console.log('round is over', player);
           updateGame(game.name, (remoteGame) => nextRound(remoteGame));
           clearInterval(interval);
-        }
-
-        if (game && !isRoundOver(game)) {
-          console.log('round is not over yet', player);
         }
       }, 1000);
 
@@ -66,7 +61,7 @@ const GamePage = () => {
   }, [game, player]);
 
   if (game === undefined) {
-    return <p>Momencik, już szukam tej gry w internetach...</p>;
+    return <p>Momencik, już szukam tej sprawy...</p>;
   }
 
   if (player === undefined) {
@@ -74,7 +69,7 @@ const GamePage = () => {
   }
 
   if (game === null) {
-    return <p>Nic nie wiem o tej grze :(</p>;
+    return <p>Nic nie wiem o tej sprawie :(</p>;
   }
 
   if (player === null || !isPlayerInTheGame(game, player)) {
@@ -117,18 +112,18 @@ const GamePage = () => {
   }
 
   return (
-    <div className="relative bg-beige font-serif h-screen">
+    <div className="relative">
       <ControlHeader title={game.name} />
       <div className="lg:grid lg:grid-cols-4 lg:gap-4">
-        <div className="lg:col-span-3 lg:gap-0 pl-8 pt-8 pb-8 lg:pr-0 pr-8">
+        <div className="lg:col-span-3 lg:gap-0 pl-4 pt-4 pb-4 lg:pr-0 pr-4">
           <Board player={player} game={game} />
           <Panel
-            className="hidden lg:block w-full bg-gray-100 rounded-md shadow-md text-gray-600 p-4 mt-8"
+            className="hidden lg:block w-full bg-gray-100 rounded-md shadow-md text-gray-600 p-4 mt-4"
             player={player}
             game={game}
           />
         </div>
-        <Chat className="hidden lg:flex h-screen pr-8 pt-8 pb-8" game={game} player={player} />
+        <Chat className="hidden lg:flex h-screen pr-4 pt-4 pb-4" game={game} player={player} />
       </div>
       <button
         onClick={() => {

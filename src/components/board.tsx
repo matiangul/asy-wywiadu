@@ -21,7 +21,7 @@ interface Props {
 }
 
 const Board = ({ player, game }: Props) => (
-  <div className="flex-1 grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 grid-flow-row-dense">
+  <div className="grid grid-cols-1 xsm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 grid-flow-row-dense">
     {game.board.map((card, cardIndex) => {
       const cardClasses = classnames(
         'p-4 pr-6 rounded-md shadow-sm space-y-2 break-words transform hover:-translate-y-1 transition-transform duration-500 ease-in-out',

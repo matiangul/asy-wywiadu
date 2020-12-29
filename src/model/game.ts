@@ -182,8 +182,6 @@ export function nextRound(game: Game): Game {
 }
 
 export function isRoundOver(game: Game): boolean {
-  console.log(game.roundStarted, game.roundTimeout, game.roundStarted + game.roundTimeout, Date.now(), game.roundStarted + game.roundTimeout <= Date.now());
-
   return (
     game.roundStarted &&
     game.roundTimeout > 0 &&

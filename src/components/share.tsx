@@ -5,10 +5,11 @@ import { Game } from '../model/game';
 
 interface Props {
   gameName: Game['name'];
+  disabled: boolean;
 }
 
 function isSharingEnabled() {
-  return navigator?.['share'];
+  return typeof navigator !== 'undefined' && navigator?.['share'];
 }
 
 function share(gameName: Game['name']): void {
@@ -19,10 +20,11 @@ function share(gameName: Game['name']): void {
   }).catch((err) => Sentry.captureException(err));
 }
 
-const Share = ({ gameName }: Props) => {
+const Share = ({ gameName, disabled }: Props) => {
   if (isSharingEnabled()) {
     return (
       <button
+        disabled={disabled}
         className="w-full mt-2 bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded"
         onClick={() => share(gameName)}
       >
@@ -49,15 +51,19 @@ const Share = ({ gameName }: Props) => {
       setCopyAlertShown(true);
       setTimeout(() => setCopyAlertShown(false), 600);
     };
+    const text =
+      typeof window !== 'undefined'
+        ? `${window.location.protocol}//${window.location.host}/join?name=${gameName}`
+        : '';
 
     return (
       <>
         <p>Zaproś znajomych kopiując i wysyłająć im link:</p>
-        <CopyToClipboard
-          text={`${window.location.protocol}//${window.location.host}/join?name=${gameName}`}
-          onCopy={showAnAlert}
-        >
-          <button className="w-full mt-2 bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded">
+        <CopyToClipboard text={text} onCopy={showAnAlert}>
+          <button
+            disabled={disabled}
+            className="w-full mt-2 bg-pink-500 hover:bg-pink-400 text-white py-2 px-4 border-b-4 border-pink-700 hover:border-pink-500 rounded"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -78,7 +84,7 @@ const Share = ({ gameName }: Props) => {
         <div
           className={`${
             copyAlertShown ? 'block' : 'hidden'
-          } bg-white rounded mt-2 text-teal-900 px-4 py-3 shadow-md`}
+          } bg-gray-200 rounded mt-2 text-teal-900 px-4 py-3 shadow-md`}
           role="alert"
         >
           <div className="flex flex-row">
@@ -87,9 +93,14 @@ const Share = ({ gameName }: Props) => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
-              <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"
+              />
             </svg>
-            <p className="font-bold">Skopiowano</p>
+            <p className="">Skopiowano</p>
           </div>
         </div>
       </>
