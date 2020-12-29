@@ -26,7 +26,7 @@ const Instruction = ({ className }: { className?: string }) => (
     </p>
     <br />
     <p>
-      Jeśli hasło jest koloru czarnego, oznacza to, że już koniec gry, trafiliście na bombę i
+      Jeśli hasło jest koloru czarnego, oznacza to, że właśnie zawaliliście sprawę, trafiliście na bombę i
       przegraliście z kretesem. Kolor twojej drużyny oznacza natomiast, że dobrze trafiliście i
       możecie wskazać kolejne hasło jeśli pozwala na to wskazówka. Jeśli hasło jest koloru
       przeciwnej drużyny to właśnie pomogliście w sprawie drugiemu zespołowi i nie możecie dalej

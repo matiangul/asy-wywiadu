@@ -4,6 +4,7 @@ import { oppositeTeamColor } from '../model/color';
 import {
   allTeamCards,
   Game,
+  getEndRoundVotes,
   groupedPlayers,
   isPlayersRound,
   isRoundOver,
@@ -12,13 +13,14 @@ import {
   setRoundsPassword,
   teamsPreviousPasswords,
   togglePlayersActiveState,
-  voteForRoundEnd,
+  toggleVoteForRoundEnd,
 } from '../model/game';
 import { isGuesser, isLeader, isPlayerActive, Player } from '../model/player';
 import { updateGame } from '../store/repository';
 import GuesserIcon from './guesser.icon';
 import Instruction from './instruction';
 import LeaderIcon from './leader.icon';
+import Share from './share';
 
 type Tab = 'players' | 'info' | 'instruction';
 
@@ -60,10 +62,18 @@ const Panel = ({ className, game, player }: Props) => {
         >
           Instrukcja
         </button>
+        <Share
+          gameName={game.name}
+          disabled={false}
+          titleVisible={false}
+          customClass="text-white bg-pink-500 hover:bg-pink-400 px-3 py-2 rounded-md text-sm font-medium"
+          customAlertClass="text-teal-900 bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+          customCopyText="Skopiuj link do gry"
+        />
         {isPlayersRound(game, player) &&
           !isRoundOver(game) &&
           game.roundStarted &&
-          game.roundTimeout && (
+          game.roundTimeout > 0 && (
             <Countdown
               date={game.roundStarted + game.roundTimeout}
               renderer={({ minutes, seconds }) => (
@@ -179,10 +189,13 @@ const Panel = ({ className, game, player }: Props) => {
                 type="button"
                 className={`w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
                 onClick={() => {
-                  updateGame(game.name, (remoteGame) => voteForRoundEnd(remoteGame, player));
+                  updateGame(game.name, (remoteGame) => toggleVoteForRoundEnd(remoteGame, player));
                 }}
               >
-                Koniec rundy
+                Koniec tury
+                {getEndRoundVotes(game).length > 0 && (
+                  <span>, jest zgoda od: {getEndRoundVotes(game).join(', ')}</span>
+                )}
               </button>
             </div>
           )}
