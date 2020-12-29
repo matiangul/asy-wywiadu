@@ -12,9 +12,9 @@ import {
   fellowGuessers,
   fellowLeaders,
   filterActivePlayers,
-  isPlayerActive,
   isGuesser,
   isLeader,
+  isPlayerActive,
   Player,
 } from './player';
 import { Word } from './word';
@@ -132,7 +132,7 @@ export function isPlayerInTheGame(game: Game, player: Player): boolean {
   return !!game.players.find((p) => arePlayersSame(p, player));
 }
 
-function getEndRoundVotes(game: Game): Votes {
+export function getEndRoundVotes(game: Game): Votes {
   return game.roundsEndRoundVotes[game.round].filter((v) => isActiveVote(v, game));
 }
 
@@ -140,10 +140,17 @@ function isActiveVote(vote: Vote, game: Game): boolean {
   return isPlayerActive(game.players.find((player) => areVotesSame(vote, getPlayersVote(player))));
 }
 
-export function voteForRoundEnd(game: Game, player: Player): Game {
-  const votes = getEndRoundVotes(game)
-    .filter((vote) => !areVotesSame(vote, getPlayersVote(player)))
-    .concat(getPlayersVote(player));
+export function toggleVoteForRoundEnd(game: Game, player: Player): Game {
+  const currentVotes = getEndRoundVotes(game);
+  let votes = [...currentVotes];
+
+  if (currentVotes.find((v) => areVotesSame(v, getPlayersVote(player)))) {
+    votes = currentVotes.filter((vote) => !areVotesSame(vote, getPlayersVote(player)));
+  } else {
+    votes = currentVotes
+      .filter((vote) => !areVotesSame(vote, getPlayersVote(player)))
+      .concat(getPlayersVote(player));
+  }
 
   const newRoundsEndRoundVotes = [...game.roundsEndRoundVotes];
   newRoundsEndRoundVotes[game.round] = votes;

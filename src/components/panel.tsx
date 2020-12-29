@@ -4,6 +4,7 @@ import { oppositeTeamColor } from '../model/color';
 import {
   allTeamCards,
   Game,
+  getEndRoundVotes,
   groupedPlayers,
   isPlayersRound,
   isRoundOver,
@@ -12,7 +13,7 @@ import {
   setRoundsPassword,
   teamsPreviousPasswords,
   togglePlayersActiveState,
-  voteForRoundEnd,
+  toggleVoteForRoundEnd,
 } from '../model/game';
 import { isGuesser, isLeader, isPlayerActive, Player } from '../model/player';
 import { updateGame } from '../store/repository';
@@ -188,10 +189,13 @@ const Panel = ({ className, game, player }: Props) => {
                 type="button"
                 className={`w-full bg-${player.color} text-white py-2 px-4 border-b-4 border-${player.color} hover:bg-opacity-75 rounded`}
                 onClick={() => {
-                  updateGame(game.name, (remoteGame) => voteForRoundEnd(remoteGame, player));
+                  updateGame(game.name, (remoteGame) => toggleVoteForRoundEnd(remoteGame, player));
                 }}
               >
-                Koniec rundy
+                Koniec tury
+                {getEndRoundVotes(game).length > 0 && (
+                  <span>, jest zgoda od: {getEndRoundVotes(game).join(', ')}</span>
+                )}
               </button>
             </div>
           )}
