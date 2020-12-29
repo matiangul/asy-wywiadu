@@ -37,7 +37,7 @@ const Panel = ({ className, game, player }: Props) => {
 
   return (
     <div className={className}>
-      <div className="flex items-baseline space-x-2">
+      <div className="grid grid-cols-3 gap-1">
         <button
           onClick={() => setActiveTab('players')}
           className={`text-white hover:bg-gray-800 ${
@@ -66,8 +66,8 @@ const Panel = ({ className, game, player }: Props) => {
           gameName={game.name}
           disabled={false}
           titleVisible={false}
-          customClass="text-white bg-pink-500 hover:bg-pink-400 px-3 py-2 rounded-md text-sm font-medium"
-          customAlertClass="text-teal-900 bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+          customClass="text-white bg-pink-500 hover:bg-pink-400 px-3 py-2 rounded-md text-sm font-medium col-span-2"
+          customAlertClass="text-teal-900 bg-gray-200 px-3 py-2 rounded-md text-sm font-medium col-span-1"
           customCopyText="Skopiuj link do gry"
         />
         {isPlayersRound(game, player) &&

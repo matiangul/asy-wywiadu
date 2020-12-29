@@ -160,14 +160,14 @@ const GamePage = () => {
       )}
       {isPanelOpen && (
         <Panel
-          className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-100 text-gray-600 p-4"
+          className="fixed lg:hidden w-5/6 h-5/6 overflow-y-auto bottom-0 right-0 mb-10 mr-12 rounded-md bg-gray-100 text-gray-600 p-4"
           player={player}
           game={game}
         />
       )}
       {isChatOpen && (
         <Chat
-          className="fixed lg:hidden w-5/6 bottom-0 right-0 mb-24 mr-12 rounded-md bg-gray-100 text-gray-600 h-4/5"
+          className="fixed lg:hidden w-5/6 h-4/6 bottom-0 right-0 mb-24 mr-12 rounded-md bg-gray-100 text-gray-600"
           game={game}
           player={player}
         />
