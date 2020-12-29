@@ -15,6 +15,7 @@ import {
   isPlayersRound,
   isRoundOver,
   nextRound,
+  roundsColor,
   selectedTeamCards,
 } from '../../src/model/game';
 import { isLeader, Player } from '../../src/model/player';
@@ -78,24 +79,27 @@ const GamePage = () => {
 
   if (isBombCardSelected(game)) {
     return !isPlayersRound(game, player) ? (
-      <>
-        <p>Jesteś zwycięzcą!</p>
-        <p>Przeciwny zespół odkrył zakazane hasło.</p>
-      </>
+      <div className="h-screen text-center">
+        <p className="mt-16 text-9xl animate-bounce">🎉</p>
+        <p className="mt-8 text-4xl">Jesteś zwycięzcą!</p>
+        <p className="text-2xl">Przeciwny zespół odkrył zakazane hasło.</p>
+      </div>
     ) : (
-      <>
-        <p>Przegraliście :(</p>
-        <p>Niestety twój zespół okrył zakazane hasło.</p>
-      </>
+      <div className="h-screen text-center">
+        <p className="mt-16 text-9xl animate-bounce">💣</p>
+        <p className="mt-8 text-4xl">Przegraliście!</p>
+        <p className="text-2xl">Niestety twój zespół okrył zakazane hasło.</p>
+      </div>
     );
   }
 
   if (selectedTeamCards(game, player.color).length === allTeamCards(game, player.color).length) {
     return (
-      <>
-        <p>Jesteś zwycięzcą!</p>
-        <p>Twój zespół odgadł wszystkie hasła.</p>
-      </>
+      <div className="h-screen text-center">
+        <p className="mt-16 text-9xl animate-bounce">🎉</p>
+        <p className="mt-8 text-4xl">Jesteś zwycięzcą!</p>
+        <p className="text-2xl">Twój zespół odgadł wszystkie hasła.</p>
+      </div>
     );
   }
 
@@ -104,15 +108,16 @@ const GamePage = () => {
     allTeamCards(game, oppositeTeamColor(player.color)).length
   ) {
     return (
-      <>
-        <p>Przegraliście :(</p>
-        <p>Niestety przeciwny zespół odgadł już wszystkie swoje hasła.</p>
-      </>
+      <div className="h-screen text-center">
+        <p className="mt-16 text-9xl animate-bounce">💣</p>
+        <p className="mt-8 text-4xl">Przegraliście!</p>
+        <p className="text-2xl">Niestety przeciwny zespół odgadł już wszystkie swoje hasła.</p>
+      </div>
     );
   }
 
   return (
-    <div className="relative">
+    <div className={`relative min-h-screen bg-${roundsColor(game)} bg-opacity-40`}>
       <ControlHeader title={game.name} />
       <div className="lg:grid lg:grid-cols-4 lg:gap-4">
         <div className="lg:col-span-3 lg:gap-0 pl-4 pt-4 pb-4 lg:pr-0 pr-4">
