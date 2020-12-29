@@ -63,7 +63,7 @@ const Panel = ({ className, game, player }: Props) => {
         {isPlayersRound(game, player) &&
           !isRoundOver(game) &&
           game.roundStarted &&
-          game.roundTimeout && (
+          game.roundTimeout > 0 && (
             <Countdown
               date={game.roundStarted + game.roundTimeout}
               renderer={({ minutes, seconds }) => (
