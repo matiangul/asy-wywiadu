@@ -19,6 +19,7 @@ import { updateGame } from '../store/repository';
 import GuesserIcon from './guesser.icon';
 import Instruction from './instruction';
 import LeaderIcon from './leader.icon';
+import Share from './share';
 
 type Tab = 'players' | 'info' | 'instruction';
 
@@ -60,6 +61,14 @@ const Panel = ({ className, game, player }: Props) => {
         >
           Instrukcja
         </button>
+        <Share
+          gameName={game.name}
+          disabled={false}
+          titleVisible={false}
+          customClass="text-white bg-pink-500 hover:bg-pink-400 px-3 py-2 rounded-md text-sm font-medium"
+          customAlertClass="text-teal-900 bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+          customCopyText="Skopiuj link do gry"
+        />
         {isPlayersRound(game, player) &&
           !isRoundOver(game) &&
           game.roundStarted &&
