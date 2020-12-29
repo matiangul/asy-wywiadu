@@ -393,6 +393,10 @@ export function togglePlayersActiveState(game: Game, player: Player): Game {
   // check for card selection and round end if this is suspended player round
 
   for (let cardIndex = 0; cardIndex < changedGame.board.length; cardIndex++) {
+    if (isCardSelected(game, cardIndex)) {
+      continue;
+    }
+
     const newGame = checkCardSelection(changedGame, changedPlayer, cardIndex);
 
     if (newGame.round !== changedGame.round) {
