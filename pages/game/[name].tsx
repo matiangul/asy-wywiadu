@@ -123,7 +123,7 @@ const GamePage = () => {
             game={game}
           />
         </div>
-        <Chat className="hidden lg:flex h-screen pr-4 pt-4 pb-4" game={game} player={player} />
+        <Chat className="hidden lg:flex h-screen fixed w-1/4 top-0 right-0 p-4" game={game} player={player} />
       </div>
       <button
         onClick={() => {
