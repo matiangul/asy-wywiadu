@@ -386,7 +386,7 @@ export function togglePlayersActiveState(game: Game, player: Player): Game {
 
   const changedPlayer = changedGame.players[playerIndex];
 
-  if (!isPlayersRound(changedGame, changedPlayer)) {
+  if (!isPlayersRound(changedGame, changedPlayer) || isPlayerActive(changedPlayer)) {
     return changedGame;
   }
 
